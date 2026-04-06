@@ -17,3 +17,7 @@ spring:
 
 server:
   port: 8083
+
+jwt:
+  secret: your-very-long-secret-key-that-is-at-least-32-characters
+  expiration: 86400000
