@@ -14,9 +14,8 @@ public class ScenarioService {
     private final ScenarioRepository scenarioRepository;
     private final UserRepository userRepository;
 
-    public Scenario createScenario(CreateScenarioRequest request, String email) {
-
-        User user = userRepository.findByEmail(email)
+    public Scenario createScenario(CreateScenarioRequest request, String currentUserEmail) {
+        User user = userRepository.findByEmail(currentUserEmail)
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
         Scenario scenario = Scenario.builder()

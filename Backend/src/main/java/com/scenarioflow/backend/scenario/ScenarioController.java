@@ -2,6 +2,7 @@ package com.scenarioflow.backend.scenario;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -16,9 +17,9 @@ public class ScenarioController {
     @PostMapping
     public Scenario createScenario(
             @RequestBody @Valid CreateScenarioRequest request,
-            @RequestParam String email
+            Authentication authentication
     ) {
-        return scenarioService.createScenario(request, email);
+        return scenarioService.createScenario(request, authentication.getName());
     }
 
     @GetMapping
