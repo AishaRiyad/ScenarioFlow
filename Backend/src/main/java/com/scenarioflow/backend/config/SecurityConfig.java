@@ -37,6 +37,8 @@ public class SecurityConfig {
                         .requestMatchers("/api/auth/**").permitAll()
                         .requestMatchers("/api/scenarios/published").authenticated()
                         .requestMatchers("/api/scenarios/**").hasRole("ADMIN")
+                        .requestMatchers("/api/nodes/**").hasRole("ADMIN")
+                        .requestMatchers("/api/choices/**").hasRole("ADMIN")
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
