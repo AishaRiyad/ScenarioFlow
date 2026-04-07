@@ -19,7 +19,7 @@ public class ScenarioNodeController {
     }
 
     @GetMapping("/scenario/{scenarioId}")
-    public List<ScenarioNode> getNodesByScenario(@PathVariable Long scenarioId) {
-        return scenarioNodeService.getNodesByScenario(scenarioId);
+    public List<NodeResponse> getNodesByScenario(@PathVariable Long scenarioId) {
+        return scenarioNodeService.getNodesWithChoices(scenarioId);
     }
 }

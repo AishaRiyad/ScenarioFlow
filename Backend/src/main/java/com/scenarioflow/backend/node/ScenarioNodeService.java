@@ -1,5 +1,7 @@
 package com.scenarioflow.backend.node;
 
+import com.scenarioflow.backend.choice.ChoiceRepository;
+import com.scenarioflow.backend.choice.ChoiceResponse;
 import com.scenarioflow.backend.scenario.Scenario;
 import com.scenarioflow.backend.scenario.ScenarioRepository;
 import lombok.RequiredArgsConstructor;
@@ -13,6 +15,7 @@ public class ScenarioNodeService {
 
     private final ScenarioRepository scenarioRepository;
     private final ScenarioNodeRepository scenarioNodeRepository;
+    private final ChoiceRepository choiceRepository;
 
     public ScenarioNode createNode(CreateNodeRequest request) {
         Scenario scenario = scenarioRepository.findById(request.getScenarioId())
@@ -42,5 +45,31 @@ public class ScenarioNodeService {
 
     public List<ScenarioNode> getNodesByScenario(Long scenarioId) {
         return scenarioNodeRepository.findByScenarioId(scenarioId);
+    }
+
+    public List<NodeResponse> getNodesWithChoices(Long scenarioId) {
+        List<ScenarioNode> nodes = scenarioNodeRepository.findByScenarioId(scenarioId);
+
+        return nodes.stream().map(node -> {
+            List<ChoiceResponse> choices = choiceRepository.findByNodeId(node.getId())
+                    .stream()
+                    .map(choice -> ChoiceResponse.builder()
+                            .id(choice.getId())
+                            .choiceText(choice.getChoiceText())
+                            .nextNodeId(choice.getNextNode().getId())
+                            .scoreImpact(choice.getScoreImpact())
+                            .build())
+                    .toList();
+
+            return NodeResponse.builder()
+                    .id(node.getId())
+                    .title(node.getTitle())
+                    .content(node.getContent())
+                    .nodeType(node.getNodeType())
+                    .feedbackText(node.getFeedbackText())
+                    .scoreValue(node.getScoreValue())
+                    .choices(choices)
+                    .build();
+        }).toList();
     }
 }
