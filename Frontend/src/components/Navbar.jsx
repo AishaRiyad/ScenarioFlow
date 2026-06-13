@@ -1,10 +1,16 @@
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import "./Navbar.css";
 
 export default function Navbar() {
   const navigate = useNavigate();
+  const location = useLocation();
+
   const role = localStorage.getItem("role");
   const token = localStorage.getItem("token");
+
+  if (location.pathname === "/" || location.pathname === "/login" || location.pathname === "/register") {
+    return null;
+  }
 
   function logout() {
     localStorage.removeItem("token");
@@ -23,11 +29,9 @@ export default function Navbar() {
         {role === "ADMIN" && <Link to="/admin">Admin</Link>}
         {role === "ADMIN" && <Link to="/admin/builder">Builder</Link>}
 
-        {token ? (
-          <button className="btn btn-secondary" onClick={logout}>Logout</button>
-        ) : (
-          <Link className="btn btn-primary" to="/login">Login</Link>
-        )}
+        <button className="btn btn-secondary" onClick={logout}>
+          Logout
+        </button>
       </div>
     </nav>
   );

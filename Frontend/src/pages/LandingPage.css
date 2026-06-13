@@ -104,13 +104,13 @@
 
 @media (max-width: 850px) {
   .hero {
-    grid-template-columns: 1fr;
-    padding: 32px;
-  }
+  min-height: auto;
+  padding: 56px;
+}
 
-  .hero h1 {
-    font-size: 40px;
-  }
+.hero h1 {
+  font-size: 52px;
+}
 
   .hero-illustration {
     height: 260px;
