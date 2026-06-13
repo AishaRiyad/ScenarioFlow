@@ -1,0 +1,41 @@
+.builder-header h1 {
+  margin: 0;
+  font-size: 46px;
+  color: #6b5ce7;
+}
+
+.builder-header p {
+  color: #716783;
+  font-size: 18px;
+}
+
+.builder-message {
+  max-width: 620px;
+  margin-top: 20px;
+}
+
+.builder-grid {
+  margin-top: 28px;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(280px, 1fr));
+  gap: 24px;
+}
+
+.builder-card {
+  padding: 30px;
+}
+
+.builder-card h2 {
+  margin-top: 0;
+}
+
+.builder-form {
+  display: grid;
+  gap: 14px;
+}
+
+@media (max-width: 850px) {
+  .builder-grid {
+    grid-template-columns: 1fr;
+  }
+}

@@ -36,6 +36,10 @@ export default function AdminDashboard() {
           <h1>Admin Studio 🎨</h1>
           <p>Create interactive scenarios and build decision paths.</p>
         </div>
+
+        <a className="btn btn-secondary" href="/admin/builder">
+          Open Scenario Builder
+        </a>
       </section>
 
       <section className="card admin-card">
@@ -44,13 +48,36 @@ export default function AdminDashboard() {
         {message && <div className="info-box">{message}</div>}
 
         <form className="admin-form" onSubmit={handleSubmit}>
-          <input className="input" name="title" placeholder="Scenario title" value={form.title} onChange={handleChange} />
+          <input
+            className="input"
+            name="title"
+            placeholder="Scenario title"
+            value={form.title}
+            onChange={handleChange}
+          />
 
-          <textarea className="input textarea" name="description" placeholder="Description" value={form.description} onChange={handleChange} />
+          <textarea
+            className="input textarea"
+            name="description"
+            placeholder="Description"
+            value={form.description}
+            onChange={handleChange}
+          />
 
-          <input className="input" name="category" placeholder="Category" value={form.category} onChange={handleChange} />
+          <input
+            className="input"
+            name="category"
+            placeholder="Category"
+            value={form.category}
+            onChange={handleChange}
+          />
 
-          <select className="input" name="difficulty" value={form.difficulty} onChange={handleChange}>
+          <select
+            className="input"
+            name="difficulty"
+            value={form.difficulty}
+            onChange={handleChange}
+          >
             <option>Easy</option>
             <option>Medium</option>
             <option>Hard</option>
