@@ -34,3 +34,12 @@
   color: #ff5fa2;
   font-weight: 700;
 }
+
+.error-box {
+  background: #fff0f0;
+  color: #d94b6a;
+  padding: 12px 14px;
+  border-radius: 16px;
+  margin-bottom: 16px;
+  font-weight: 600;
+}
