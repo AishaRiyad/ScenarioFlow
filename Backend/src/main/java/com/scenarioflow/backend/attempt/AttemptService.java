@@ -28,7 +28,6 @@ public class AttemptService {
     private final UserRepository userRepository;
 
     public PlayNodeResponse startAttempt(Long scenarioId, String email) {
-
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
@@ -52,7 +51,6 @@ public class AttemptService {
     }
 
     public PlayNodeResponse submitChoice(Long attemptId, Long choiceId) {
-
         Attempt attempt = attemptRepository.findById(attemptId)
                 .orElseThrow(() -> new RuntimeException("Attempt not found"));
 
@@ -86,6 +84,47 @@ public class AttemptService {
         attemptRepository.save(attempt);
 
         return buildPlayNodeResponse(attempt, nextNode);
+    }
+
+    public List<AttemptSummaryResponse> getMyAttempts(String email) {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        return attemptRepository.findAll()
+                .stream()
+                .filter(attempt -> attempt.getUser().getId().equals(user.getId()))
+                .map(attempt -> AttemptSummaryResponse.builder()
+                        .attemptId(attempt.getId())
+                        .scenarioId(attempt.getScenario().getId())
+                        .scenarioTitle(attempt.getScenario().getTitle())
+                        .finalScore(attempt.getFinalScore())
+                        .completed(attempt.getCompleted())
+                        .build())
+                .toList();
+    }
+
+    public AttemptResultResponse getResult(Long attemptId, String email) {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        Attempt attempt = attemptRepository.findById(attemptId)
+                .orElseThrow(() -> new RuntimeException("Attempt not found"));
+
+        if (!attempt.getUser().getId().equals(user.getId())) {
+            throw new RuntimeException("You are not allowed to view this result");
+        }
+
+        String resultText = attempt.getCompleted()
+                ? "You completed this scenario successfully 🌟"
+                : "This scenario is not completed yet.";
+
+        return AttemptResultResponse.builder()
+                .attemptId(attempt.getId())
+                .scenarioTitle(attempt.getScenario().getTitle())
+                .finalScore(attempt.getFinalScore())
+                .completed(attempt.getCompleted())
+                .resultText(resultText)
+                .build();
     }
 
     private PlayNodeResponse buildPlayNodeResponse(Attempt attempt, ScenarioNode node) {

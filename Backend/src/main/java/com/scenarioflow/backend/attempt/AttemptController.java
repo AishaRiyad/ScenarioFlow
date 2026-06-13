@@ -5,6 +5,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/attempts")
 @RequiredArgsConstructor
@@ -21,5 +23,16 @@ public class AttemptController {
     @PostMapping("/choice")
     public PlayNodeResponse choose(@RequestBody @Valid SubmitChoiceRequest request) {
         return attemptService.submitChoice(request.getAttemptId(), request.getChoiceId());
+    }
+
+    @GetMapping("/my")
+    public List<AttemptSummaryResponse> myAttempts(Authentication auth) {
+        return attemptService.getMyAttempts(auth.getName());
+    }
+
+    @GetMapping("/{attemptId}/result")
+    public AttemptResultResponse result(@PathVariable Long attemptId,
+                                        Authentication auth) {
+        return attemptService.getResult(attemptId, auth.getName());
     }
 }
