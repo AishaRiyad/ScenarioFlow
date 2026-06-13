@@ -1,0 +1,39 @@
+.admin-header h1 {
+  margin: 0;
+  font-size: 46px;
+  color: #6b5ce7;
+}
+
+.admin-header p {
+  color: #716783;
+  font-size: 18px;
+}
+
+.admin-card {
+  margin-top: 28px;
+  padding: 32px;
+  max-width: 680px;
+}
+
+.admin-card h2 {
+  margin-top: 0;
+}
+
+.admin-form {
+  display: grid;
+  gap: 16px;
+}
+
+.textarea {
+  min-height: 120px;
+  resize: vertical;
+}
+
+.info-box {
+  background: #f0fff6;
+  color: #2f9e63;
+  padding: 12px 14px;
+  border-radius: 16px;
+  margin-bottom: 16px;
+  font-weight: 700;
+}
