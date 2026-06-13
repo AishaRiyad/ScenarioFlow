@@ -31,4 +31,9 @@ public class ScenarioController {
     public List<Scenario> getPublishedScenarios() {
         return scenarioService.getPublishedScenarios();
     }
+
+    @PatchMapping("/{scenarioId}/publish")
+    public Scenario publishScenario(@PathVariable Long scenarioId) {
+        return scenarioService.publishScenario(scenarioId);
+    }
 }

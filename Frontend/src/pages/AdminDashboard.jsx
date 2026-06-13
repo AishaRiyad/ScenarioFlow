@@ -11,6 +11,7 @@ export default function AdminDashboard() {
   });
 
   const [message, setMessage] = useState("");
+  const [publishId, setPublishId] = useState("");
 
   function handleChange(e) {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -23,9 +24,27 @@ export default function AdminDashboard() {
     try {
       await api.post("/scenarios", form);
       setMessage("Scenario created successfully ✨");
-      setForm({ title: "", description: "", category: "", difficulty: "Easy" });
+      setForm({
+        title: "",
+        description: "",
+        category: "",
+        difficulty: "Easy",
+      });
     } catch {
       setMessage("Could not create scenario");
+    }
+  }
+
+  async function publishScenario(e) {
+    e.preventDefault();
+    setMessage("");
+
+    try {
+      await api.patch(`/scenarios/${publishId}/publish`);
+      setMessage("Scenario published successfully 🌟");
+      setPublishId("");
+    } catch {
+      setMessage("Could not publish scenario");
     }
   }
 
@@ -85,6 +104,21 @@ export default function AdminDashboard() {
 
           <button className="btn btn-primary" type="submit">
             Create Scenario
+          </button>
+        </form>
+
+        <form className="admin-form publish-form" onSubmit={publishScenario}>
+          <h2>Publish Scenario</h2>
+
+          <input
+            className="input"
+            placeholder="Scenario ID"
+            value={publishId}
+            onChange={(e) => setPublishId(e.target.value)}
+          />
+
+          <button className="btn btn-secondary" type="submit">
+            Publish Scenario
           </button>
         </form>
       </section>

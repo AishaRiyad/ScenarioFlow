@@ -30,6 +30,15 @@ public class ScenarioService {
         return scenarioRepository.save(scenario);
     }
 
+    public Scenario publishScenario(Long scenarioId) {
+    Scenario scenario = scenarioRepository.findById(scenarioId)
+            .orElseThrow(() -> new RuntimeException("Scenario not found"));
+
+    scenario.setStatus(ScenarioStatus.PUBLISHED);
+
+    return scenarioRepository.save(scenario);
+   }
+
     public List<Scenario> getAllScenarios() {
         return scenarioRepository.findAll();
     }
@@ -37,4 +46,5 @@ public class ScenarioService {
     public List<Scenario> getPublishedScenarios() {
         return scenarioRepository.findByStatus(ScenarioStatus.PUBLISHED);
     }
+    
 }
