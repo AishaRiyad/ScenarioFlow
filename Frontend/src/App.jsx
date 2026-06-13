@@ -8,6 +8,7 @@ import ScenarioListPage from "./pages/ScenarioListPage";
 import ScenarioBuilderPage from "./pages/ScenarioBuilderPage";
 import ScenarioPlayPage from "./pages/ScenarioPlayPage";
 import ResultPage from "./pages/ResultPage";
+import MyAttemptsPage from "./pages/MyAttemptsPage";
 
 function App() {
   return (
@@ -21,6 +22,7 @@ function App() {
         <Route path="/admin/builder" element={<ScenarioBuilderPage />} />
         <Route path="/scenarios/:scenarioId/play" element={<ScenarioPlayPage />} />
         <Route path="/attempts/:attemptId/result" element={<ResultPage />} />
+        <Route path="/my-attempts" element={<MyAttemptsPage />} />
       </Routes>
     </BrowserRouter>
   );

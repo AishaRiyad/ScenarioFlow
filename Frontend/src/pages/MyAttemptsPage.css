@@ -1,0 +1,43 @@
+.attempts-header h1 {
+  margin: 0;
+  font-size: 46px;
+  color: #6b5ce7;
+}
+
+.attempts-header p {
+  color: #716783;
+  font-size: 18px;
+}
+
+.attempts-grid {
+  margin-top: 28px;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 22px;
+}
+
+.attempt-card {
+  padding: 26px;
+}
+
+.attempt-card h2 {
+  margin-top: 0;
+}
+
+.done,
+.pending {
+  display: inline-block;
+  padding: 8px 14px;
+  border-radius: 999px;
+  font-weight: 700;
+}
+
+.done {
+  background: #f0fff6;
+  color: #2f9e63;
+}
+
+.pending {
+  background: #fff7df;
+  color: #c98700;
+}
