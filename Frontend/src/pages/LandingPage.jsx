@@ -30,7 +30,7 @@ export default function LandingPage() {
         <div className="hero-illustration">
           <div className="bubble big">🎯</div>
           <div className="bubble medium">💭</div>
-          <div className="bubble small">🌈</div>
+          <div className="bubble small">🌸</div>
           <div className="path-card">Choose → Learn → Improve</div>
         </div>
       </section>

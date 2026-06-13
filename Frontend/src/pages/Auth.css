@@ -1,0 +1,36 @@
+.auth-page {
+  display: grid;
+  place-items: center;
+}
+
+.auth-card {
+  width: min(460px, 100%);
+  padding: 38px;
+}
+
+.auth-card h1 {
+  margin: 0 0 8px;
+  font-size: 42px;
+  color: #6b5ce7;
+}
+
+.auth-card p {
+  margin-bottom: 28px;
+  color: #716783;
+}
+
+.auth-form {
+  display: grid;
+  gap: 16px;
+}
+
+.auth-link {
+  margin-top: 20px;
+  text-align: center;
+  color: #716783;
+}
+
+.auth-link a {
+  color: #ff5fa2;
+  font-weight: 700;
+}
