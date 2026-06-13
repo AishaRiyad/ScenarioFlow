@@ -6,6 +6,7 @@ import RegisterPage from "./pages/RegisterPage";
 import AdminDashboard from "./pages/AdminDashboard";
 import ScenarioListPage from "./pages/ScenarioListPage";
 import ScenarioBuilderPage from "./pages/ScenarioBuilderPage";
+import ScenarioPlayPage from "./pages/ScenarioPlayPage";
 
 function App() {
   return (
@@ -17,6 +18,7 @@ function App() {
         <Route path="/admin" element={<AdminDashboard />} />
         <Route path="/scenarios" element={<ScenarioListPage />} />
         <Route path="/admin/builder" element={<ScenarioBuilderPage />} />
+        <Route path="/scenarios/:scenarioId/play" element={<ScenarioPlayPage />} />
       </Routes>
     </BrowserRouter>
   );

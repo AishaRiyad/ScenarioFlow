@@ -1,0 +1,52 @@
+.play-page {
+  display: grid;
+  place-items: center;
+}
+
+.play-card {
+  width: min(760px, 100%);
+  padding: 42px;
+  text-align: center;
+}
+
+.play-card h1 {
+  color: #6b5ce7;
+  font-size: 42px;
+  margin: 12px 0;
+}
+
+.play-card p {
+  color: #716783;
+  font-size: 19px;
+  line-height: 1.7;
+}
+
+.node-type {
+  display: inline-block;
+  background: #fff0f7;
+  color: #ff5fa2;
+  padding: 8px 14px;
+  border-radius: 999px;
+  font-weight: 700;
+}
+
+.choices-list {
+  display: grid;
+  gap: 14px;
+  margin-top: 28px;
+}
+
+.choice-button {
+  border: 2px solid #eee5ff;
+  background: white;
+  padding: 16px 18px;
+  border-radius: 20px;
+  cursor: pointer;
+  font-weight: 700;
+  color: #2b2540;
+}
+
+.choice-button:hover {
+  border-color: #b9a7ff;
+  transform: translateY(-2px);
+}
