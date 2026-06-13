@@ -20,7 +20,7 @@ export default function ScenarioPlayPage() {
       });
 
       setNode(res.data);
-      setAttemptId(res.data.attemptId || 1);
+      setAttemptId(res.data.attemptId);
     } catch (err) {
       setMessage(err.response?.data?.message || "Could not start scenario");
     }

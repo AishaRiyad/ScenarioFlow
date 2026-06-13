@@ -2,6 +2,7 @@ package com.scenarioflow.backend.attempt;
 
 import com.scenarioflow.backend.choice.Choice;
 import com.scenarioflow.backend.choice.ChoiceRepository;
+import com.scenarioflow.backend.choice.ChoiceResponse;
 import com.scenarioflow.backend.node.NodeType;
 import com.scenarioflow.backend.node.ScenarioNode;
 import com.scenarioflow.backend.node.ScenarioNodeRepository;
@@ -10,11 +11,10 @@ import com.scenarioflow.backend.scenario.ScenarioRepository;
 import com.scenarioflow.backend.user.User;
 import com.scenarioflow.backend.user.UserRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.Comparator;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -27,7 +27,7 @@ public class AttemptService {
     private final ChoiceRepository choiceRepository;
     private final UserRepository userRepository;
 
-    public ScenarioNode startAttempt(Long scenarioId, String email) {
+    public PlayNodeResponse startAttempt(Long scenarioId, String email) {
 
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("User not found"));
@@ -48,10 +48,10 @@ public class AttemptService {
 
         attemptRepository.save(attempt);
 
-        return startNode;
+        return buildPlayNodeResponse(attempt, startNode);
     }
 
-    public ScenarioNode submitChoice(Long attemptId, Long choiceId) {
+    public PlayNodeResponse submitChoice(Long attemptId, Long choiceId) {
 
         Attempt attempt = attemptRepository.findById(attemptId)
                 .orElseThrow(() -> new RuntimeException("Attempt not found"));
@@ -85,6 +85,29 @@ public class AttemptService {
 
         attemptRepository.save(attempt);
 
-        return nextNode;
+        return buildPlayNodeResponse(attempt, nextNode);
+    }
+
+    private PlayNodeResponse buildPlayNodeResponse(Attempt attempt, ScenarioNode node) {
+        List<ChoiceResponse> choices = choiceRepository.findByNodeId(node.getId())
+                .stream()
+                .map(choice -> ChoiceResponse.builder()
+                        .id(choice.getId())
+                        .choiceText(choice.getChoiceText())
+                        .nextNodeId(choice.getNextNode().getId())
+                        .scoreImpact(choice.getScoreImpact())
+                        .build())
+                .toList();
+
+        return PlayNodeResponse.builder()
+                .attemptId(attempt.getId())
+                .nodeId(node.getId())
+                .title(node.getTitle())
+                .content(node.getContent())
+                .nodeType(node.getNodeType())
+                .feedbackText(node.getFeedbackText())
+                .currentScore(attempt.getFinalScore())
+                .choices(choices)
+                .build();
     }
 }
