@@ -7,6 +7,7 @@ import AdminDashboard from "./pages/AdminDashboard";
 import ScenarioListPage from "./pages/ScenarioListPage";
 import ScenarioBuilderPage from "./pages/ScenarioBuilderPage";
 import ScenarioPlayPage from "./pages/ScenarioPlayPage";
+import ResultPage from "./pages/ResultPage";
 
 function App() {
   return (
@@ -19,6 +20,7 @@ function App() {
         <Route path="/scenarios" element={<ScenarioListPage />} />
         <Route path="/admin/builder" element={<ScenarioBuilderPage />} />
         <Route path="/scenarios/:scenarioId/play" element={<ScenarioPlayPage />} />
+        <Route path="/attempts/:attemptId/result" element={<ResultPage />} />
       </Routes>
     </BrowserRouter>
   );
