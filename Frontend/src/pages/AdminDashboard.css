@@ -37,3 +37,28 @@
   margin-bottom: 16px;
   font-weight: 700;
 }
+
+
+.stats-grid {
+  margin-top: 28px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 18px;
+}
+
+.stat-card {
+  padding: 22px;
+  text-align: center;
+}
+
+.stat-card h3 {
+  margin: 0;
+  font-size: 36px;
+  color: #6b5ce7;
+}
+
+.stat-card p {
+  margin: 8px 0 0;
+  color: #716783;
+  font-weight: 700;
+}

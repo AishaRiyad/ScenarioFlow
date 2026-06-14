@@ -1,8 +1,10 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import api from "../api/api";
 import "./AdminDashboard.css";
 
 export default function AdminDashboard() {
+  const [stats, setStats] = useState(null);
+
   const [form, setForm] = useState({
     title: "",
     description: "",
@@ -12,6 +14,19 @@ export default function AdminDashboard() {
 
   const [message, setMessage] = useState("");
   const [publishId, setPublishId] = useState("");
+
+  useEffect(() => {
+    async function fetchStats() {
+      try {
+        const res = await api.get("/dashboard/stats");
+        setStats(res.data);
+      } catch (err) {
+        console.log(err);
+      }
+    }
+
+    fetchStats();
+  }, []);
 
   function handleChange(e) {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -60,6 +75,35 @@ export default function AdminDashboard() {
           Open Scenario Builder
         </a>
       </section>
+
+      {stats && (
+        <section className="stats-grid">
+          <div className="card stat-card">
+            <h3>{stats.totalUsers}</h3>
+            <p>Users</p>
+          </div>
+
+          <div className="card stat-card">
+            <h3>{stats.totalScenarios}</h3>
+            <p>Scenarios</p>
+          </div>
+
+          <div className="card stat-card">
+            <h3>{stats.totalAttempts}</h3>
+            <p>Attempts</p>
+          </div>
+
+          <div className="card stat-card">
+            <h3>{stats.completedAttempts}</h3>
+            <p>Completed</p>
+          </div>
+
+          <div className="card stat-card">
+            <h3>{stats.averageScore.toFixed(1)}</h3>
+            <p>Average Score</p>
+          </div>
+        </section>
+      )}
 
       <section className="card admin-card">
         <h2>Create New Scenario</h2>
