@@ -24,6 +24,7 @@ export default function Navbar() {
       <Link to="/" className="nav-logo">ScenarioFlow 🌷</Link>
 
       <div className="nav-links">
+        {token && <Link to="/profile">Profile</Link>}
         {token && <Link to="/scenarios">Scenarios</Link>}
         {token && <Link to="/my-attempts">My Attempts</Link>}
         {role === "ADMIN" && <Link to="/admin">Admin</Link>}

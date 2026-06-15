@@ -1,0 +1,72 @@
+.profile-page {
+  display: grid;
+  place-items: center;
+}
+
+.profile-card {
+  width: min(760px, 100%);
+  padding: 42px;
+  text-align: center;
+}
+
+.profile-avatar {
+  font-size: 72px;
+}
+
+.profile-card h1 {
+  color: #6b5ce7;
+  font-size: 42px;
+  margin-bottom: 6px;
+}
+
+.profile-card > p {
+  color: #716783;
+  font-size: 18px;
+}
+
+.role-badge {
+  display: inline-block;
+  background: #fff0f7;
+  color: #ff5fa2;
+  padding: 8px 16px;
+  border-radius: 999px;
+  font-weight: 800;
+  margin-top: 10px;
+}
+
+.profile-stats {
+  margin-top: 32px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 18px;
+}
+
+.profile-stats div {
+  background: white;
+  border-radius: 22px;
+  padding: 20px;
+  box-shadow: 0 12px 30px rgba(93, 74, 120, 0.1);
+}
+
+.profile-stats h3 {
+  margin: 0;
+  color: #6b5ce7;
+  font-size: 34px;
+}
+
+.profile-stats p {
+  color: #716783;
+  font-weight: 700;
+}
+
+.profile-form {
+  margin-top: 34px;
+  display: grid;
+  gap: 14px;
+  text-align: left;
+}
+
+.profile-form h2 {
+  color: #6b5ce7;
+  text-align: center;
+}
