@@ -70,3 +70,62 @@
   color: #6b5ce7;
   text-align: center;
 }
+
+.achievements-section {
+  margin-top: 38px;
+  text-align: center;
+}
+
+.achievements-section h2 {
+  color: #6b5ce7;
+}
+
+.achievements-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 16px;
+  margin-top: 18px;
+}
+
+.achievement-card {
+  border-radius: 22px;
+  padding: 18px;
+  background: white;
+  box-shadow: 0 12px 30px rgba(93, 74, 120, 0.1);
+}
+
+.achievement-icon {
+  font-size: 38px;
+}
+
+.achievement-card h3 {
+  margin: 10px 0 6px;
+  color: #2b2540;
+}
+
+.achievement-card p {
+  color: #716783;
+  font-size: 14px;
+}
+
+.achievement-card span {
+  display: inline-block;
+  margin-top: 8px;
+  padding: 6px 12px;
+  border-radius: 999px;
+  font-weight: 800;
+}
+
+.achievement-card.unlocked span {
+  background: #f0fff6;
+  color: #2f9e63;
+}
+
+.achievement-card.locked {
+  opacity: 0.55;
+}
+
+.achievement-card.locked span {
+  background: #f1f1f1;
+  color: #777;
+}

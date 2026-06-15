@@ -5,6 +5,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class UserService {
@@ -92,5 +94,52 @@ public class UserService {
         userRepository.save(user);
 
         return getProfile(user.getEmail());
+    }
+
+    public List<AchievementResponse> getAchievements(String email) {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        var attempts = attemptRepository.findByUser(user);
+
+        long completed = attempts.stream()
+                .filter(a -> Boolean.TRUE.equals(a.getCompleted()))
+                .count();
+
+        int bestScore = attempts.stream()
+                .filter(a -> a.getFinalScore() != null)
+                .mapToInt(a -> a.getFinalScore())
+                .max()
+                .orElse(0);
+
+        return List.of(
+                AchievementResponse.builder()
+                        .title("First Step")
+                        .description("Start your first scenario attempt.")
+                        .icon("🌱")
+                        .unlocked(!attempts.isEmpty())
+                        .build(),
+
+                AchievementResponse.builder()
+                        .title("Scenario Finisher")
+                        .description("Complete your first scenario.")
+                        .icon("🏁")
+                        .unlocked(completed >= 1)
+                        .build(),
+
+                AchievementResponse.builder()
+                        .title("High Scorer")
+                        .description("Reach a score of 20 or more.")
+                        .icon("⭐")
+                        .unlocked(bestScore >= 20)
+                        .build(),
+
+                AchievementResponse.builder()
+                        .title("Decision Master")
+                        .description("Complete at least 5 scenarios.")
+                        .icon("👑")
+                        .unlocked(completed >= 5)
+                        .build()
+        );
     }
 }

@@ -4,6 +4,7 @@ import "./ProfilePage.css";
 
 export default function ProfilePage() {
   const [profile, setProfile] = useState(null);
+  const [achievements, setAchievements] = useState([]);
 
   const [editForm, setEditForm] = useState({
     fullName: "",
@@ -24,6 +25,9 @@ export default function ProfilePage() {
         currentPassword: "",
         newPassword: "",
       });
+
+      const achievementsRes = await api.get("/users/me/achievements");
+      setAchievements(achievementsRes.data);
     }
 
     fetchProfile();
@@ -136,6 +140,26 @@ export default function ProfilePage() {
             Save Changes
           </button>
         </form>
+
+        <section className="achievements-section">
+          <h2>Achievements 🏅</h2>
+
+          <div className="achievements-grid">
+            {achievements.map((achievement) => (
+              <div
+                className={`achievement-card ${
+                  achievement.unlocked ? "unlocked" : "locked"
+                }`}
+                key={achievement.title}
+              >
+                <div className="achievement-icon">{achievement.icon}</div>
+                <h3>{achievement.title}</h3>
+                <p>{achievement.description}</p>
+                <span>{achievement.unlocked ? "Unlocked" : "Locked"}</span>
+              </div>
+            ))}
+          </div>
+        </section>
       </section>
     </main>
   );

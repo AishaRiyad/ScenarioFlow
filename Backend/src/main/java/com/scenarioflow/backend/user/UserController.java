@@ -4,6 +4,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/users")
 @RequiredArgsConstructor
@@ -22,5 +24,10 @@ public class UserController {
             @RequestBody UpdateProfileRequest request
     ) {
         return userService.updateProfile(auth.getName(), request);
+    }
+
+    @GetMapping("/me/achievements")
+    public List<AchievementResponse> getMyAchievements(Authentication auth) {
+        return userService.getAchievements(auth.getName());
     }
 }
