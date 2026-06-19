@@ -29,6 +29,9 @@ ScenarioFlow is a full-stack interactive decision-based simulation platform wher
 * Change email and password
 * Achievement system
 * Scenario rating system
+* Scenario search by keyword
+* Scenario filtering by category
+* PDF result report download
 
 ---
 
@@ -188,6 +191,9 @@ A regular registered account.
 * Update full name, email, and password
 * Unlock achievements based on progress
 * Rate completed scenarios
+* Search scenarios
+* Filter scenarios by category
+* Download result reports as PDF
 
 ---
 
@@ -416,6 +422,37 @@ Expected Response:
 
 ---
 
+
+## Search Published Scenarios
+
+```http
+GET http://localhost:8083/api/scenarios/published?keyword=Interview
+```
+
+Headers:
+
+```http
+Authorization: Bearer USER_OR_ADMIN_TOKEN
+```
+
+---
+
+## Filter Published Scenarios By Category
+
+```http
+GET http://localhost:8083/api/scenarios/published?category=Career
+```
+
+Headers:
+
+```http
+Authorization: Bearer USER_OR_ADMIN_TOKEN
+```
+
+
+---
+
+
 ## Postman Testing Flow
 
 1. Register User
@@ -511,18 +548,18 @@ SELECT * FROM choices;
 
 ## Frontend Pages
 
-| Route                         | Description                                  |
-| ----------------------------- | -------------------------------------------- |
-| `/`                           | Landing Page                                 |
-| `/login`                      | Login Page                                   |
-| `/register`                   | Register Page                                |
-| `/scenarios`                  | Published Scenarios                          |
-| `/scenarios/:scenarioId/play` | Play Scenario                                |
-| `/attempts/:attemptId/result` | Result Page                                  |
-| `/my-attempts`                | User Attempt History                         |
-| `/profile`                    | User profile, edit profile, and achievements |
-| `/admin`                      | Admin Dashboard                              |
-| `/admin/builder`              | Scenario Builder                             |
+| Route                         | Description                                         |
+| ----------------------------- | --------------------------------------------------- |
+| `/`                           | Landing Page                                        |
+| `/login`                      | Login Page                                          |
+| `/register`                   | Register Page                                       |
+| `/scenarios`                  | Published scenarios, search, and category filtering |
+| `/scenarios/:scenarioId/play` | Play Scenario                                       |
+| `/attempts/:attemptId/result` | Result page, rating, and PDF report download        |
+| `/my-attempts`                | User Attempt History                                |
+| `/profile`                    | User profile, edit profile, and achievements        |
+| `/admin`                      | Admin Dashboard                                     |
+| `/admin/builder`              | Scenario Builder                                    |
 
 ---
 
