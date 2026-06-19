@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link, useParams, useSearchParams } from "react-router-dom";
+import jsPDF from "jspdf";
 import api from "../api/api";
 import "./ResultPage.css";
 
@@ -27,6 +28,34 @@ export default function ResultPage() {
 
     fetchResult();
   }, [attemptId]);
+
+  function downloadReport() {
+    if (!result) return;
+
+    const doc = new jsPDF();
+
+    const feedback = result.feedback || "No feedback available";
+    const resultMessage = result.resultMessage || "No result message";
+
+    doc.setFontSize(20);
+    doc.text("ScenarioFlow Result Report", 20, 20);
+
+    doc.setFontSize(12);
+    doc.text(`Attempt ID: ${attemptId}`, 20, 40);
+    doc.text(`Final Score: ${String(result.finalScore ?? 0)}`, 20, 50);
+    doc.text(`Result: ${resultMessage}`, 20, 60);
+
+    doc.text("Feedback:", 20, 80);
+    doc.text(feedback, 20, 90, { maxWidth: 170 });
+
+    doc.text(
+      `Generated at: ${new Date().toLocaleString()}`,
+      20,
+      130
+    );
+
+    doc.save(`scenarioflow-result-${attemptId}.pdf`);
+  }
 
   async function submitRating(e) {
     e.preventDefault();
@@ -57,7 +86,11 @@ export default function ResultPage() {
         {result && (
           <>
             <h1>{result.resultMessage}</h1>
-            <div className="score-box">{result.finalScore}</div>
+
+            <div className="score-box">
+              {result.finalScore}
+            </div>
+
             <p>{result.feedback}</p>
 
             {scenarioId && (
@@ -88,16 +121,32 @@ export default function ResultPage() {
                 </button>
 
                 {ratingMessage && (
-                  <p className="rating-message">{ratingMessage}</p>
+                  <p className="rating-message">
+                    {ratingMessage}
+                  </p>
                 )}
               </form>
             )}
 
             <div className="result-actions">
-              <Link className="btn btn-primary" to="/scenarios">
+              <button
+                className="btn btn-secondary"
+                onClick={downloadReport}
+              >
+                Download PDF Report
+              </button>
+
+              <Link
+                className="btn btn-primary"
+                to="/scenarios"
+              >
                 Try Another Scenario
               </Link>
-              <Link className="btn btn-secondary" to="/">
+
+              <Link
+                className="btn btn-secondary"
+                to="/"
+              >
                 Back Home
               </Link>
             </div>
