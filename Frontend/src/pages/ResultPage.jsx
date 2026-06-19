@@ -1,12 +1,19 @@
 import { useEffect, useState } from "react";
-import { Link, useParams } from "react-router-dom";
+import { Link, useParams, useSearchParams } from "react-router-dom";
 import api from "../api/api";
 import "./ResultPage.css";
 
 export default function ResultPage() {
   const { attemptId } = useParams();
+  const [searchParams] = useSearchParams();
+  const scenarioId = searchParams.get("scenarioId");
+
   const [result, setResult] = useState(null);
   const [error, setError] = useState("");
+
+  const [rating, setRating] = useState(5);
+  const [comment, setComment] = useState("");
+  const [ratingMessage, setRatingMessage] = useState("");
 
   useEffect(() => {
     async function fetchResult() {
@@ -21,6 +28,25 @@ export default function ResultPage() {
     fetchResult();
   }, [attemptId]);
 
+  async function submitRating(e) {
+    e.preventDefault();
+    setRatingMessage("");
+
+    try {
+      await api.post("/ratings", {
+        scenarioId: Number(scenarioId),
+        rating: Number(rating),
+        comment,
+      });
+
+      setRatingMessage("Thank you for your rating ⭐");
+    } catch (err) {
+      setRatingMessage(
+        err.response?.data?.message || "Could not submit rating"
+      );
+    }
+  }
+
   return (
     <main className="page result-page">
       <section className="card result-card">
@@ -33,6 +59,39 @@ export default function ResultPage() {
             <h1>{result.resultMessage}</h1>
             <div className="score-box">{result.finalScore}</div>
             <p>{result.feedback}</p>
+
+            {scenarioId && (
+              <form className="rating-form" onSubmit={submitRating}>
+                <h2>Rate this scenario ⭐</h2>
+
+                <select
+                  className="input"
+                  value={rating}
+                  onChange={(e) => setRating(e.target.value)}
+                >
+                  <option value="5">5 - Excellent</option>
+                  <option value="4">4 - Good</option>
+                  <option value="3">3 - Okay</option>
+                  <option value="2">2 - Needs work</option>
+                  <option value="1">1 - Poor</option>
+                </select>
+
+                <textarea
+                  className="input textarea"
+                  placeholder="Optional comment"
+                  value={comment}
+                  onChange={(e) => setComment(e.target.value)}
+                />
+
+                <button className="btn btn-primary" type="submit">
+                  Submit Rating
+                </button>
+
+                {ratingMessage && (
+                  <p className="rating-message">{ratingMessage}</p>
+                )}
+              </form>
+            )}
 
             <div className="result-actions">
               <Link className="btn btn-primary" to="/scenarios">

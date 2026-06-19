@@ -42,3 +42,19 @@
   gap: 14px;
   margin-top: 28px;
 }
+
+
+.rating-form {
+  margin-top: 30px;
+  display: grid;
+  gap: 14px;
+}
+
+.rating-form h2 {
+  color: #6b5ce7;
+}
+
+.rating-message {
+  color: #2f9e63 !important;
+  font-weight: 700;
+}

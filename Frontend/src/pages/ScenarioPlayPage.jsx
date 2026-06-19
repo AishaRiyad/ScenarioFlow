@@ -38,7 +38,9 @@ export default function ScenarioPlayPage() {
       setNode(res.data);
 
       if (res.data.nodeType === "END") {
-        navigate(`/attempts/${attemptId}/result`);
+        navigate(
+          `/attempts/${res.data.attemptId}/result?scenarioId=${scenarioId}`
+        );
       }
     } catch (err) {
       setMessage(err.response?.data?.message || "Could not submit choice");
@@ -52,7 +54,9 @@ export default function ScenarioPlayPage() {
           <>
             <h1>Ready to begin? 🎮</h1>
             <p>Your choices will shape the story and final result.</p>
+
             {message && <div className="error-box">{message}</div>}
+
             <button className="btn btn-primary" onClick={startScenario}>
               Start Scenario
             </button>
@@ -60,7 +64,9 @@ export default function ScenarioPlayPage() {
         ) : (
           <>
             <span className="node-type">{node.nodeType}</span>
+
             <h1>{node.title}</h1>
+
             <p>{node.content}</p>
 
             <div className="choices-list">
