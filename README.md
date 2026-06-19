@@ -1,8 +1,8 @@
 # ScenarioFlow 🌷
 
-## Interactive Decision-Based Simulation Platform
+## Interactive Decision-Based Simulation Platform with Analytics, Achievements, and Ratings
 
-ScenarioFlow is a full-stack interactive decision-based simulation platform where admins create realistic decision-based scenarios, and users play them by making choices that lead to different paths, endings, scores, and feedback.
+ScenarioFlow is a full-stack interactive decision-based simulation platform where admins create realistic decision-based scenarios, and users play them by making choices that lead to different paths, endings, scores, feedback, achievements, and ratings.
 
 ---
 
@@ -20,6 +20,15 @@ ScenarioFlow is a full-stack interactive decision-based simulation platform wher
 * Result evaluation
 * User attempt history
 * Responsive React UI
+
+### Extra Features
+
+* Admin analytics dashboard
+* User profile page
+* Edit profile information
+* Change email and password
+* Achievement system
+* Scenario rating system
 
 ---
 
@@ -59,6 +68,7 @@ scenarioflow/
 │   │   ├── node/
 │   │   ├── choice/
 │   │   ├── attempt/
+│   │   ├── rating/
 │   │   └── common/
 │   ├── src/main/resources/
 │   │   └── application.yml
@@ -74,6 +84,17 @@ scenarioflow/
 ├── docs/
 └── README.md
 ```
+
+---
+
+## Database Entities
+
+* User
+* Scenario
+* ScenarioNode
+* ScenarioChoice
+* Attempt
+* ScenarioRating
 
 ---
 
@@ -163,6 +184,10 @@ A regular registered account.
 * Submit choices
 * View results
 * View attempt history
+* View personal profile
+* Update full name, email, and password
+* Unlock achievements based on progress
+* Rate completed scenarios
 
 ---
 
@@ -177,6 +202,8 @@ Administrator account with advanced permissions.
 * Create nodes
 * Create choices
 * Build decision trees
+* View dashboard statistics
+* Track total users, scenarios, attempts, completed attempts, and average score
 
 ---
 
@@ -229,13 +256,167 @@ Authorization: Bearer YOUR_TOKEN
 Content-Type: application/json
 ```
 
-> You receive the JWT token from the Login or Register response.
+---
+
+## Get User Profile
+
+```http
+GET http://localhost:8083/api/users/me
+```
+
+Headers:
+
+```http
+Authorization: Bearer USER_OR_ADMIN_TOKEN
+```
+
+Expected Response:
+
+```json
+{
+  "fullName": "Aisha",
+  "email": "aisha@test.com",
+  "role": "USER",
+  "totalAttempts": 3,
+  "completedAttempts": 2,
+  "bestScore": 20,
+  "averageScore": 13.5
+}
+```
+
+---
+
+## Update User Profile
+
+```http
+PUT http://localhost:8083/api/users/me
+```
+
+Headers:
+
+```http
+Authorization: Bearer USER_OR_ADMIN_TOKEN
+Content-Type: application/json
+```
+
+Body:
+
+```json
+{
+  "fullName": "Aisha Updated",
+  "email": "aisha.new@test.com",
+  "currentPassword": "12345678",
+  "newPassword": "newPassword123"
+}
+```
+
+> Note: after changing email or password, login again.
+
+---
+
+## Get User Achievements
+
+```http
+GET http://localhost:8083/api/users/me/achievements
+```
+
+Headers:
+
+```http
+Authorization: Bearer USER_OR_ADMIN_TOKEN
+```
+
+Expected Response:
+
+```json
+[
+  {
+    "title": "First Step",
+    "description": "Start your first scenario attempt.",
+    "icon": "🌱",
+    "unlocked": true
+  }
+]
+```
+
+---
+
+## Get Admin Dashboard Stats
+
+```http
+GET http://localhost:8083/api/dashboard/stats
+```
+
+Headers:
+
+```http
+Authorization: Bearer ADMIN_TOKEN
+```
+
+Expected Response:
+
+```json
+{
+  "totalUsers": 5,
+  "totalScenarios": 3,
+  "totalAttempts": 12,
+  "completedAttempts": 8,
+  "averageScore": 14.5
+}
+```
+
+---
+
+## Rate Scenario
+
+```http
+POST http://localhost:8083/api/ratings
+```
+
+Headers:
+
+```http
+Authorization: Bearer USER_OR_ADMIN_TOKEN
+Content-Type: application/json
+```
+
+Body:
+
+```json
+{
+  "scenarioId": 1,
+  "rating": 5,
+  "comment": "Very useful scenario."
+}
+```
+
+---
+
+## Get Scenario Rating Summary
+
+```http
+GET http://localhost:8083/api/ratings/scenario/1
+```
+
+Headers:
+
+```http
+Authorization: Bearer USER_OR_ADMIN_TOKEN
+```
+
+Expected Response:
+
+```json
+{
+  "scenarioId": 1,
+  "averageRating": 4.5,
+  "totalRatings": 2
+}
+```
 
 ---
 
 ## Postman Testing Flow
-
-Follow this order to test the entire application:
 
 1. Register User
 2. Login User
@@ -254,6 +435,11 @@ Follow this order to test the entire application:
 15. Submit Second Choice
 16. Get Result
 17. Get User Attempts
+18. Get User Profile
+19. Update Profile
+20. Get Achievements
+21. Submit Scenario Rating
+22. Get Dashboard Statistics
 
 ---
 
@@ -325,17 +511,18 @@ SELECT * FROM choices;
 
 ## Frontend Pages
 
-| Route                         | Description          |
-| ----------------------------- | -------------------- |
-| `/`                           | Landing Page         |
-| `/login`                      | Login Page           |
-| `/register`                   | Register Page        |
-| `/scenarios`                  | Published Scenarios  |
-| `/scenarios/:scenarioId/play` | Play Scenario        |
-| `/attempts/:attemptId/result` | Result Page          |
-| `/my-attempts`                | User Attempt History |
-| `/admin`                      | Admin Dashboard      |
-| `/admin/builder`              | Scenario Builder     |
+| Route                         | Description                                  |
+| ----------------------------- | -------------------------------------------- |
+| `/`                           | Landing Page                                 |
+| `/login`                      | Login Page                                   |
+| `/register`                   | Register Page                                |
+| `/scenarios`                  | Published Scenarios                          |
+| `/scenarios/:scenarioId/play` | Play Scenario                                |
+| `/attempts/:attemptId/result` | Result Page                                  |
+| `/my-attempts`                | User Attempt History                         |
+| `/profile`                    | User profile, edit profile, and achievements |
+| `/admin`                      | Admin Dashboard                              |
+| `/admin/builder`              | Scenario Builder                             |
 
 ---
 
@@ -344,19 +531,19 @@ SELECT * FROM choices;
 * Drag-and-drop decision tree builder
 * Scenario categories and filtering
 * Scenario search functionality
-* Scenario ratings and reviews
 * AI-generated feedback
 * AI-generated scenarios
-* Analytics dashboard
+* Analytics dashboard enhancements
 * Scenario templates
 * Docker deployment
 * Public demo version
 
 ---
 
+
 ## Author
 
-Developed by **Aisha Riyad Abu Jaab** as a personal learning project to practice full-stack web development using Spring Boot, React, JWT Authentication, and MySQL.
+Developed by **Aesha Reyad Abu Jeeb** as a personal learning project to practice full-stack web development using Spring Boot, React, JWT Authentication, MySQL, Analytics Dashboards, Achievements, and Scenario Ratings.
 
 ---
 
