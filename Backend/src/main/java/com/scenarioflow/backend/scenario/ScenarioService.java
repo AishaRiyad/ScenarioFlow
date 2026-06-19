@@ -31,13 +31,13 @@ public class ScenarioService {
     }
 
     public Scenario publishScenario(Long scenarioId) {
-    Scenario scenario = scenarioRepository.findById(scenarioId)
-            .orElseThrow(() -> new RuntimeException("Scenario not found"));
+        Scenario scenario = scenarioRepository.findById(scenarioId)
+                .orElseThrow(() -> new RuntimeException("Scenario not found"));
 
-    scenario.setStatus(ScenarioStatus.PUBLISHED);
+        scenario.setStatus(ScenarioStatus.PUBLISHED);
 
-    return scenarioRepository.save(scenario);
-   }
+        return scenarioRepository.save(scenario);
+    }
 
     public List<Scenario> getAllScenarios() {
         return scenarioRepository.findAll();
@@ -46,5 +46,28 @@ public class ScenarioService {
     public List<Scenario> getPublishedScenarios() {
         return scenarioRepository.findByStatus(ScenarioStatus.PUBLISHED);
     }
-    
+
+    public List<Scenario> searchPublishedScenarios(
+            String category,
+            String keyword
+    ) {
+
+        if (category != null && !category.isBlank()) {
+            return scenarioRepository.findByStatusAndCategoryIgnoreCase(
+                    ScenarioStatus.PUBLISHED,
+                    category
+            );
+        }
+
+        if (keyword != null && !keyword.isBlank()) {
+            return scenarioRepository.findByStatusAndTitleContainingIgnoreCase(
+                    ScenarioStatus.PUBLISHED,
+                    keyword
+            );
+        }
+
+        return scenarioRepository.findByStatus(
+                ScenarioStatus.PUBLISHED
+        );
+    }
 }

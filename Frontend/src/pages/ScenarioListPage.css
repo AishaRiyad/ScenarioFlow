@@ -53,3 +53,10 @@
   font-weight: 700;
   color: #8b7cf6;
 }
+
+.filters-section {
+  display: grid;
+  grid-template-columns: 1fr 220px 140px;
+  gap: 14px;
+  margin-bottom: 24px;
+}

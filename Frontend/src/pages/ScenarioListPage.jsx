@@ -6,19 +6,27 @@ import "./ScenarioListPage.css";
 export default function ScenarioListPage() {
   const [scenarios, setScenarios] = useState([]);
   const [error, setError] = useState("");
+  const [keyword, setKeyword] = useState("");
+  const [category, setCategory] = useState("");
 
   const navigate = useNavigate();
 
-  useEffect(() => {
-    async function fetchScenarios() {
-      try {
-        const res = await api.get("/scenarios/published");
-        setScenarios(res.data);
-      } catch {
-        setError("Could not load scenarios");
-      }
-    }
+  async function fetchScenarios() {
+    try {
+      const res = await api.get("/scenarios/published", {
+        params: {
+          keyword,
+          category,
+        },
+      });
 
+      setScenarios(res.data);
+    } catch {
+      setError("Could not load scenarios");
+    }
+  }
+
+  useEffect(() => {
     fetchScenarios();
   }, []);
 
@@ -32,6 +40,32 @@ export default function ScenarioListPage() {
       </header>
 
       {error && <div className="error-box">{error}</div>}
+
+      <section className="filters-section">
+        <input
+          className="input"
+          placeholder="Search scenario..."
+          value={keyword}
+          onChange={(e) => setKeyword(e.target.value)}
+        />
+
+        <select
+          className="input"
+          value={category}
+          onChange={(e) => setCategory(e.target.value)}
+        >
+          <option value="">All Categories</option>
+          <option value="Career">Career</option>
+          <option value="Education">Education</option>
+          <option value="Leadership">Leadership</option>
+          <option value="Communication">Communication</option>
+          <option value="Ethics">Ethics</option>
+        </select>
+
+        <button className="btn btn-primary" onClick={fetchScenarios}>
+          Search
+        </button>
+      </section>
 
       <section className="scenario-grid">
         {scenarios.map((scenario) => (

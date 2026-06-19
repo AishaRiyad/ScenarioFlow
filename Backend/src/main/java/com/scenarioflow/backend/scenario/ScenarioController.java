@@ -19,7 +19,10 @@ public class ScenarioController {
             @RequestBody @Valid CreateScenarioRequest request,
             Authentication authentication
     ) {
-        return scenarioService.createScenario(request, authentication.getName());
+        return scenarioService.createScenario(
+                request,
+                authentication.getName()
+        );
     }
 
     @GetMapping
@@ -28,8 +31,14 @@ public class ScenarioController {
     }
 
     @GetMapping("/published")
-    public List<Scenario> getPublishedScenarios() {
-        return scenarioService.getPublishedScenarios();
+    public List<Scenario> getPublishedScenarios(
+            @RequestParam(required = false) String category,
+            @RequestParam(required = false) String keyword
+    ) {
+        return scenarioService.searchPublishedScenarios(
+                category,
+                keyword
+        );
     }
 
     @PatchMapping("/{scenarioId}/publish")
