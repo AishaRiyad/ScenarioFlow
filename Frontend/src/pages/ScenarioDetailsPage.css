@@ -53,3 +53,51 @@
   color: #716783;
   font-weight: 700;
 }
+
+.comments-section {
+  margin-top: 34px;
+  text-align: left;
+}
+
+.comments-section h2 {
+  color: #6b5ce7;
+  text-align: center;
+}
+
+.comment-form {
+  display: grid;
+  gap: 12px;
+  margin-bottom: 22px;
+}
+
+.comment-message {
+  color: #2f9e63 !important;
+  font-weight: 700;
+  text-align: center;
+}
+
+.comments-list {
+  display: grid;
+  gap: 14px;
+}
+
+.comment-card {
+  background: white;
+  border-radius: 20px;
+  padding: 16px;
+  box-shadow: 0 12px 30px rgba(93, 74, 120, 0.1);
+}
+
+.comment-card strong {
+  color: #6b5ce7;
+}
+
+.comment-card p {
+  font-size: 16px;
+  margin: 8px 0;
+}
+
+.comment-card span {
+  font-size: 13px;
+  color: #999;
+}

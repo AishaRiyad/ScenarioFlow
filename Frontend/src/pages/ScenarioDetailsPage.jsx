@@ -10,6 +10,10 @@ export default function ScenarioDetailsPage() {
   const [scenario, setScenario] = useState(null);
   const [rating, setRating] = useState(null);
 
+  const [comments, setComments] = useState([]);
+  const [commentText, setCommentText] = useState("");
+  const [commentMessage, setCommentMessage] = useState("");
+
   useEffect(() => {
     async function fetchData() {
       const scenarioRes = await api.get(`/scenarios/${scenarioId}`);
@@ -17,10 +21,31 @@ export default function ScenarioDetailsPage() {
 
       const ratingRes = await api.get(`/ratings/scenario/${scenarioId}`);
       setRating(ratingRes.data);
+
+      const commentsRes = await api.get(`/comments/scenario/${scenarioId}`);
+      setComments(commentsRes.data);
     }
 
     fetchData();
   }, [scenarioId]);
+
+  async function submitComment(e) {
+    e.preventDefault();
+    setCommentMessage("");
+
+    try {
+      const res = await api.post("/comments", {
+        scenarioId: Number(scenarioId),
+        content: commentText,
+      });
+
+      setComments([res.data, ...comments]);
+      setCommentText("");
+      setCommentMessage("Comment added successfully 🌸");
+    } catch (err) {
+      setCommentMessage(err.response?.data?.message || "Could not add comment");
+    }
+  }
 
   if (!scenario) {
     return (
@@ -35,7 +60,9 @@ export default function ScenarioDetailsPage() {
   return (
     <main className="page details-page">
       <section className="card details-card">
-        <span className="details-category">{scenario.category || "General"}</span>
+        <span className="details-category">
+          {scenario.category || "General"}
+        </span>
 
         <h1>{scenario.title}</h1>
         <p>{scenario.description}</p>
@@ -49,7 +76,9 @@ export default function ScenarioDetailsPage() {
           <div>
             <strong>Rating</strong>
             <span>
-              {rating ? `${rating.averageRating.toFixed(1)} ⭐ (${rating.totalRatings})` : "No rating"}
+              {rating
+                ? `${rating.averageRating.toFixed(1)} ⭐ (${rating.totalRatings})`
+                : "No rating"}
             </span>
           </div>
 
@@ -65,6 +94,41 @@ export default function ScenarioDetailsPage() {
         >
           Start Scenario 🎮
         </button>
+
+        <section className="comments-section">
+          <h2>Community Comments 💬</h2>
+
+          <form className="comment-form" onSubmit={submitComment}>
+            <textarea
+              className="input textarea"
+              placeholder="Share your thoughts about this scenario..."
+              value={commentText}
+              onChange={(e) => setCommentText(e.target.value)}
+            />
+
+            <button className="btn btn-secondary" type="submit">
+              Add Comment
+            </button>
+
+            {commentMessage && (
+              <p className="comment-message">{commentMessage}</p>
+            )}
+          </form>
+
+          <div className="comments-list">
+            {comments.length === 0 ? (
+              <p>No comments yet.</p>
+            ) : (
+              comments.map((comment) => (
+                <div className="comment-card" key={comment.id}>
+                  <strong>{comment.userFullName}</strong>
+                  <p>{comment.content}</p>
+                  <span>{new Date(comment.createdAt).toLocaleString()}</span>
+                </div>
+              ))
+            )}
+          </div>
+        </section>
       </section>
     </main>
   );
