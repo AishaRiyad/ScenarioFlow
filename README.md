@@ -1,6 +1,6 @@
 # ScenarioFlow 🌷
 
-## Interactive Decision-Based Simulation Platform with Analytics, Achievements, and Ratings
+## Interactive Decision-Based Simulation Platform with Analytics, Achievements, Ratings, and Visual Builder
 
 ScenarioFlow is a full-stack interactive decision-based simulation platform where admins create realistic decision-based scenarios, and users play them by making choices that lead to different paths, endings, scores, feedback, achievements, and ratings.
 
@@ -21,19 +21,18 @@ ScenarioFlow is a full-stack interactive decision-based simulation platform wher
 * User attempt history
 * Responsive React UI
 
-### Extra Features
+### Advanced Features
 
-* Admin analytics dashboard
-* User profile page
-* Edit profile information
-* Change email and password
-* Achievement system
+* Visual decision tree builder
+* Save node positions in visual builder
+* Smart personalized feedback
+* Community comments system
 * Scenario rating system
-* Scenario search by keyword
-* Scenario filtering by category
-* PDF result report download
-* Scenario details page
-* Improved scenario builder with dropdowns and node preview
+* Achievement system
+* Analytics dashboard
+* PDF result reports
+* User profile management
+* Scenario search and filtering
 
 
 ---
@@ -67,24 +66,32 @@ ScenarioFlow is a full-stack interactive decision-based simulation platform wher
 scenarioflow/
 ├── backend/
 │   ├── src/main/java/com/scenarioflow/backend/
-│   │   ├── auth/
-│   │   ├── config/
-│   │   ├── user/
-│   │   ├── scenario/
-│   │   ├── node/
-│   │   ├── choice/
 │   │   ├── attempt/
+│   │   ├── auth/
+│   │   ├── choice/
+│   │   ├── comment/
+│   │   ├── common/
+│   │   ├── config/
+│   │   ├── dashboard/
+│   │   ├── evaluation/
+│   │   ├── node/
 │   │   ├── rating/
-│   │   └── common/
+│   │   ├── scenario/
+│   │   ├── user/
+│   │   └── BackendApplication.java
+│   │
 │   ├── src/main/resources/
 │   │   └── application.yml
+│   │
 │   └── pom.xml
 │
 ├── frontend/
 │   ├── src/
 │   │   ├── api/
 │   │   ├── components/
-│   │   └── pages/
+│   │   ├── pages/
+│   │   └── assets/
+│   │
 │   └── package.json
 │
 ├── docs/
@@ -92,6 +99,7 @@ scenarioflow/
 ```
 
 ---
+
 
 ## Database Entities
 
@@ -102,6 +110,7 @@ scenarioflow/
 * Attempt
 * AttemptStep
 * ScenarioRating
+* ScenarioComment
 
 ---
 
@@ -195,10 +204,13 @@ A regular registered account.
 * View personal profile
 * Update full name, email, and password
 * Unlock achievements based on progress
-* Rate completed scenarios
 * Search scenarios
 * Filter scenarios by category
-* Download result reports as PDF
+* Add comments to scenarios
+* Rate scenarios
+* Download PDF reports
+* Receive personalized feedback
+* Manage profile information
 
 ---
 
@@ -218,6 +230,9 @@ Administrator account with advanced permissions.
 * Manage scenarios from dashboard
 * Publish scenarios directly from dashboard
 * Use improved builder workflow with dropdown selection and node preview
+* Visual scenario builder
+* Save visual layout positions
+* View platform analytics
 
 ---
 
@@ -278,26 +293,6 @@ Content-Type: application/json
 GET http://localhost:8083/api/users/me
 ```
 
-Headers:
-
-```http
-Authorization: Bearer USER_OR_ADMIN_TOKEN
-```
-
-Expected Response:
-
-```json
-{
-  "fullName": "Aisha",
-  "email": "aisha@test.com",
-  "role": "USER",
-  "totalAttempts": 3,
-  "completedAttempts": 2,
-  "bestScore": 20,
-  "averageScore": 13.5
-}
-```
-
 ---
 
 ## Update User Profile
@@ -306,51 +301,12 @@ Expected Response:
 PUT http://localhost:8083/api/users/me
 ```
 
-Headers:
-
-```http
-Authorization: Bearer USER_OR_ADMIN_TOKEN
-Content-Type: application/json
-```
-
-Body:
-
-```json
-{
-  "fullName": "Aisha Updated",
-  "email": "aisha.new@test.com",
-  "currentPassword": "12345678",
-  "newPassword": "newPassword123"
-}
-```
-
-> Note: after changing email or password, login again.
-
 ---
 
 ## Get User Achievements
 
 ```http
 GET http://localhost:8083/api/users/me/achievements
-```
-
-Headers:
-
-```http
-Authorization: Bearer USER_OR_ADMIN_TOKEN
-```
-
-Expected Response:
-
-```json
-[
-  {
-    "title": "First Step",
-    "description": "Start your first scenario attempt.",
-    "icon": "🌱",
-    "unlocked": true
-  }
-]
 ```
 
 ---
@@ -361,24 +317,6 @@ Expected Response:
 GET http://localhost:8083/api/dashboard/stats
 ```
 
-Headers:
-
-```http
-Authorization: Bearer ADMIN_TOKEN
-```
-
-Expected Response:
-
-```json
-{
-  "totalUsers": 5,
-  "totalScenarios": 3,
-  "totalAttempts": 12,
-  "completedAttempts": 8,
-  "averageScore": 14.5
-}
-```
-
 ---
 
 ## Rate Scenario
@@ -387,83 +325,9 @@ Expected Response:
 POST http://localhost:8083/api/ratings
 ```
 
-Headers:
-
-```http
-Authorization: Bearer USER_OR_ADMIN_TOKEN
-Content-Type: application/json
-```
-
-Body:
-
-```json
-{
-  "scenarioId": 1,
-  "rating": 5,
-  "comment": "Very useful scenario."
-}
-```
-
 ---
 
 ## Get Scenario Rating Summary
-
-```http
-GET http://localhost:8083/api/ratings/scenario/1
-```
-
-Headers:
-
-```http
-Authorization: Bearer USER_OR_ADMIN_TOKEN
-```
-
-Expected Response:
-
-```json
-{
-  "scenarioId": 1,
-  "averageRating": 4.5,
-  "totalRatings": 2
-}
-```
-
----
-
-
-## Dashboard
-
-```http
-GET http://localhost:8083/api/dashboard/stats
-```
-
----
-
-## Profile
-
-```http
-GET http://localhost:8083/api/users/me
-```
-
-```http
-PUT http://localhost:8083/api/users/me
-```
-
----
-
-## Achievements
-
-```http
-GET http://localhost:8083/api/users/me/achievements
-```
-
----
-
-## Ratings
-
-```http
-POST http://localhost:8083/api/ratings
-```
 
 ```http
 GET http://localhost:8083/api/ratings/scenario/{scenarioId}
@@ -471,6 +335,29 @@ GET http://localhost:8083/api/ratings/scenario/{scenarioId}
 
 ---
 
+## Add Comment
+
+```http
+POST http://localhost:8083/api/comments
+```
+
+---
+
+## Get Scenario Comments
+
+```http
+GET http://localhost:8083/api/comments/scenario/{scenarioId}
+```
+
+---
+
+## Update Visual Builder Node Position
+
+```http
+PATCH http://localhost:8083/api/nodes/{nodeId}/position
+```
+
+---
 
 ## Search Published Scenarios
 
@@ -478,28 +365,18 @@ GET http://localhost:8083/api/ratings/scenario/{scenarioId}
 GET http://localhost:8083/api/scenarios/published?keyword=Interview
 ```
 
-Headers:
-
-```http
-Authorization: Bearer USER_OR_ADMIN_TOKEN
-```
-
 ---
 
-## Filter Published Scenarios By Category
+## Filter Published Scenarios
 
 ```http
 GET http://localhost:8083/api/scenarios/published?category=Career
 ```
 
-Headers:
-
-```http
-Authorization: Bearer USER_OR_ADMIN_TOKEN
-```
-
 
 ---
+
+
 
 
 ## Postman Testing Flow
@@ -525,24 +402,28 @@ Authorization: Bearer USER_OR_ADMIN_TOKEN
 19. Update Profile
 20. Get Achievements
 21. Submit Scenario Rating
-22. Get Dashboard Statistics
+22. Submit Scenario Comment
+23. Get Scenario Comments
+24. Get Dashboard Statistics
 
 ---
 
 ## Example User Journey
 
-1. Register account
+1. Register
 2. Login
-3. Browse published scenarios
+3. Browse scenarios
 4. View scenario details
-5. Start scenario
-6. Make decisions
-7. Reach ending
-8. View result
-9. Download PDF report
-10. Rate scenario
-11. Unlock achievements
-12. View profile statistics
+5. Read ratings and comments
+6. Start scenario
+7. Make decisions
+8. Reach ending
+9. Receive personalized feedback
+10. Download PDF report
+11. Rate scenario
+12. Add comment
+13. Unlock achievements
+14. View profile statistics
 
 ---
 
@@ -614,35 +495,60 @@ SELECT * FROM choices;
 
 ## Frontend Pages
 
-| Route                         | Description                                         |
-| ----------------------------- | --------------------------------------------------- |
-| `/`                           | Landing Page                                        |
-| `/login`                      | Login Page                                          |
-| `/register`                   | Register Page                                       |
-| `/scenarios`                  | Scenario list, search, and filtering                |
-| `/scenarios/:id`              | Scenario details page                               |
-| `/scenarios/:id/play`         | Play Scenario                                       |
-| `/attempts/:id/result`        | Result page, rating, and PDF report download        |
-| `/my-attempts`                | User Attempt History                                |
-| `/profile`                    | User profile, edit profile, and achievements        |
-| `/admin`                      | Admin Dashboard                                     |
-| `/admin/builder`              | Scenario Builder                                    |
+| Route                         | Description                                                 |
+| ----------------------------- | ----------------------------------------------------------- |
+| `/`                           | Landing Page                                                |
+| `/login`                      | Login Page                                                  |
+| `/register`                   | Register Page                                               |
+| `/profile`                    | User profile, achievements, and account management          |
+| `/scenarios`                  | Scenario list, search, filtering, ratings, and comments     |
+| `/scenarios/:scenarioId`      | Scenario details page with ratings and community comments   |
+| `/scenarios/:scenarioId/play` | Interactive scenario player                                 |
+| `/attempts/:attemptId/result` | Result page, personalized feedback, rating, and PDF reports |
+| `/my-attempts`                | User attempt history and performance tracking               |
+| `/admin`                      | Analytics dashboard and scenario management                 |
+| `/admin/builder`              | Form-based scenario builder                                 |
+| `/admin/visual-builder`       | Visual decision tree builder with node position persistence |
 
 ---
 
-## Future Improvements
 
-* Drag-and-drop decision tree builder
-* AI-generated personalized feedback
-* Scenario comments and discussions
-* Leaderboards
-* Public scenario marketplace
-* Scenario cloning and templates
+
+
+## Future Enhancements
+
+* Full drag-and-drop node creation
+* Connect nodes visually without forms
+* OpenAI-powered feedback generation
+* Scenario templates marketplace
+* Scenario cloning
 * Email notifications
+* Leaderboards
+* Public user profiles
 * Docker deployment
 * Cloud hosting
 
 ---
+
+
+## Why This Project Is Special
+
+ScenarioFlow is not a traditional CRUD application.
+
+The project combines:
+
+* Authentication and authorization
+* Decision-tree engine
+* Interactive simulations
+* User progress tracking
+* Achievement system
+* Community engagement through comments and ratings
+* Visual scenario mapping
+* Analytics dashboard
+* Smart personalized feedback
+* PDF report generation
+
+This makes ScenarioFlow a portfolio-level software engineering project that demonstrates backend architecture, frontend development, database design, system modeling, and user experience design.
 
 
 ## Author
