@@ -112,6 +112,13 @@ public class ScenarioService {
         return scenarioRepository.save(scenario);
     }
 
+    public void deleteScenario(Long scenarioId) {
+        Scenario scenario = scenarioRepository.findById(scenarioId)
+                .orElseThrow(() -> new RuntimeException("Scenario not found"));
+
+        scenarioRepository.delete(scenario);
+    }
+
     public List<Scenario> getAllScenarios() {
         return scenarioRepository.findAll();
     }

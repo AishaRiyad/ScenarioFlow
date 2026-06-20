@@ -61,4 +61,9 @@ public class ScenarioController {
                 authentication.getName()
         );
     }
+
+    @DeleteMapping("/{id}")
+    public void deleteScenario(@PathVariable Long id) {
+        scenarioService.deleteScenario(id);
+    }
 }

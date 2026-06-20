@@ -113,3 +113,9 @@
   margin-top: 24px;
   padding: 24px;
 }
+
+.btn-danger {
+  background: #ff6b6b;
+  color: white;
+  margin-left: 8px;
+}

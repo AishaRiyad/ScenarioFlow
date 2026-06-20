@@ -49,13 +49,16 @@ export default function AdminDashboard() {
 
     try {
       await api.post("/scenarios", form);
+
       setMessage("Scenario created successfully ✨");
+
       setForm({
         title: "",
         description: "",
         category: "",
         difficulty: "Easy",
       });
+
       fetchScenarios();
     } catch {
       setMessage("Could not create scenario");
@@ -80,10 +83,28 @@ export default function AdminDashboard() {
 
     try {
       await api.patch(`/scenarios/${id}/publish`);
+
       setMessage("Scenario published successfully 🌟");
       fetchScenarios();
     } catch {
       setMessage("Could not publish scenario");
+    }
+  }
+
+  async function deleteScenario(id) {
+    const confirmed = window.confirm(
+      "Are you sure you want to delete this scenario?"
+    );
+
+    if (!confirmed) return;
+
+    try {
+      await api.delete(`/scenarios/${id}`);
+
+      setMessage("Scenario deleted successfully 🗑️");
+      fetchScenarios();
+    } catch {
+      setMessage("Could not delete scenario");
     }
   }
 
@@ -176,6 +197,7 @@ export default function AdminDashboard() {
                 <td>{scenario.title}</td>
                 <td>{scenario.category}</td>
                 <td>{scenario.difficulty}</td>
+
                 <td>
                   <span
                     className={
@@ -187,6 +209,7 @@ export default function AdminDashboard() {
                     {scenario.status}
                   </span>
                 </td>
+
                 <td>
                   {scenario.status !== "PUBLISHED" ? (
                     <button
@@ -196,8 +219,15 @@ export default function AdminDashboard() {
                       Publish
                     </button>
                   ) : (
-                    "Published"
+                    <span>Published</span>
                   )}
+
+                  <button
+                    className="btn btn-danger small-btn"
+                    onClick={() => deleteScenario(scenario.id)}
+                  >
+                    Delete
+                  </button>
                 </td>
               </tr>
             ))}
