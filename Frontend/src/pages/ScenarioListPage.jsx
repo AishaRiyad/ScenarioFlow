@@ -83,9 +83,9 @@ export default function ScenarioListPage() {
 
               <button
                 className="btn btn-primary"
-                onClick={() => navigate(`/scenarios/${scenario.id}/play`)}
+                onClick={() => navigate(`/scenarios/${scenario.id}`)}
               >
-                Start
+                View Details
               </button>
             </div>
           </article>

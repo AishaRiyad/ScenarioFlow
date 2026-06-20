@@ -12,6 +12,7 @@ import ScenarioPlayPage from "./pages/ScenarioPlayPage";
 import ResultPage from "./pages/ResultPage";
 import MyAttemptsPage from "./pages/MyAttemptsPage";
 import ProfilePage from "./pages/ProfilePage";
+import ScenarioDetailsPage from "./pages/ScenarioDetailsPage";
 
 function App() {
   return (
@@ -29,6 +30,7 @@ function App() {
         <Route path="/attempts/:attemptId/result" element={<ResultPage />} />
         <Route path="/my-attempts" element={<MyAttemptsPage />} />
         <Route path="/profile" element={<ProfilePage />} />
+        <Route path="/scenarios/:scenarioId" element={<ScenarioDetailsPage />} />
       </Routes>
     </BrowserRouter>
   );

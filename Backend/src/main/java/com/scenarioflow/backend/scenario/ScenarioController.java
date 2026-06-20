@@ -30,6 +30,11 @@ public class ScenarioController {
         return scenarioService.getAllScenarios();
     }
 
+    @GetMapping("/{id}")
+    public Scenario getScenarioById(@PathVariable Long id) {
+        return scenarioService.getScenarioById(id);
+    }
+
     @GetMapping("/published")
     public List<Scenario> getPublishedScenarios(
             @RequestParam(required = false) String category,

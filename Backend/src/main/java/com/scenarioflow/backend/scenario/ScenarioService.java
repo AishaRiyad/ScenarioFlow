@@ -47,6 +47,11 @@ public class ScenarioService {
         return scenarioRepository.findByStatus(ScenarioStatus.PUBLISHED);
     }
 
+    public Scenario getScenarioById(Long id) {
+         return scenarioRepository.findById(id)
+                 .orElseThrow(() -> new RuntimeException("Scenario not found"));
+   }
+
     public List<Scenario> searchPublishedScenarios(
             String category,
             String keyword
