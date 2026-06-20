@@ -5,6 +5,7 @@ import "./AdminDashboard.css";
 export default function AdminDashboard() {
   const [stats, setStats] = useState(null);
   const [scenarios, setScenarios] = useState([]);
+  const [templateType, setTemplateType] = useState("JOB_INTERVIEW");
 
   const [form, setForm] = useState({
     title: "",
@@ -61,6 +62,19 @@ export default function AdminDashboard() {
     }
   }
 
+  async function createTemplateScenario() {
+    try {
+      await api.post("/scenarios/template", {
+        templateType,
+      });
+
+      setMessage("Template scenario created 🎉");
+      fetchScenarios();
+    } catch {
+      setMessage("Could not create template");
+    }
+  }
+
   async function publishScenario(id) {
     setMessage("");
 
@@ -85,6 +99,8 @@ export default function AdminDashboard() {
           Open Scenario Builder
         </a>
       </section>
+
+      {message && <div className="info-box">{message}</div>}
 
       {stats && (
         <section className="stats-grid">
@@ -114,6 +130,29 @@ export default function AdminDashboard() {
           </div>
         </section>
       )}
+
+      <section className="card template-card">
+        <h2>Create From Template</h2>
+
+        <select
+          className="input"
+          value={templateType}
+          onChange={(e) => setTemplateType(e.target.value)}
+        >
+          <option value="JOB_INTERVIEW">Job Interview</option>
+          <option value="CUSTOMER_SERVICE">Customer Service</option>
+          <option value="LEADERSHIP">Leadership</option>
+          <option value="ETHICS">Ethics</option>
+          <option value="CONFLICT_RESOLUTION">Conflict Resolution</option>
+        </select>
+
+        <button
+          className="btn btn-primary"
+          onClick={createTemplateScenario}
+        >
+          Create Template
+        </button>
+      </section>
 
       <section className="card scenario-table-card">
         <h2>Manage Scenarios</h2>
@@ -168,8 +207,6 @@ export default function AdminDashboard() {
 
       <section className="card admin-card">
         <h2>Create New Scenario</h2>
-
-        {message && <div className="info-box">{message}</div>}
 
         <form className="admin-form" onSubmit={handleSubmit}>
           <input

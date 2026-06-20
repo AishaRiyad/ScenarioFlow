@@ -50,4 +50,15 @@ public class ScenarioController {
     public Scenario publishScenario(@PathVariable Long scenarioId) {
         return scenarioService.publishScenario(scenarioId);
     }
+
+    @PostMapping("/template")
+    public Scenario createFromTemplate(
+            @RequestBody @Valid CreateScenarioFromTemplateRequest request,
+            Authentication authentication
+    ) {
+        return scenarioService.createFromTemplate(
+                request,
+                authentication.getName()
+        );
+    }
 }
