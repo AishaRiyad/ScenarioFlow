@@ -4,6 +4,7 @@ import "./AdminDashboard.css";
 
 export default function AdminDashboard() {
   const [stats, setStats] = useState(null);
+  const [scenarios, setScenarios] = useState([]);
 
   const [form, setForm] = useState({
     title: "",
@@ -13,7 +14,15 @@ export default function AdminDashboard() {
   });
 
   const [message, setMessage] = useState("");
-  const [publishId, setPublishId] = useState("");
+
+  async function fetchScenarios() {
+    try {
+      const res = await api.get("/scenarios");
+      setScenarios(res.data);
+    } catch (err) {
+      console.log(err);
+    }
+  }
 
   useEffect(() => {
     async function fetchStats() {
@@ -26,6 +35,7 @@ export default function AdminDashboard() {
     }
 
     fetchStats();
+    fetchScenarios();
   }, []);
 
   function handleChange(e) {
@@ -45,19 +55,19 @@ export default function AdminDashboard() {
         category: "",
         difficulty: "Easy",
       });
+      fetchScenarios();
     } catch {
       setMessage("Could not create scenario");
     }
   }
 
-  async function publishScenario(e) {
-    e.preventDefault();
+  async function publishScenario(id) {
     setMessage("");
 
     try {
-      await api.patch(`/scenarios/${publishId}/publish`);
+      await api.patch(`/scenarios/${id}/publish`);
       setMessage("Scenario published successfully 🌟");
-      setPublishId("");
+      fetchScenarios();
     } catch {
       setMessage("Could not publish scenario");
     }
@@ -105,6 +115,57 @@ export default function AdminDashboard() {
         </section>
       )}
 
+      <section className="card scenario-table-card">
+        <h2>Manage Scenarios</h2>
+
+        <table className="scenario-table">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Title</th>
+              <th>Category</th>
+              <th>Difficulty</th>
+              <th>Status</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            {scenarios.map((scenario) => (
+              <tr key={scenario.id}>
+                <td>{scenario.id}</td>
+                <td>{scenario.title}</td>
+                <td>{scenario.category}</td>
+                <td>{scenario.difficulty}</td>
+                <td>
+                  <span
+                    className={
+                      scenario.status === "PUBLISHED"
+                        ? "published"
+                        : "draft"
+                    }
+                  >
+                    {scenario.status}
+                  </span>
+                </td>
+                <td>
+                  {scenario.status !== "PUBLISHED" ? (
+                    <button
+                      className="btn btn-primary small-btn"
+                      onClick={() => publishScenario(scenario.id)}
+                    >
+                      Publish
+                    </button>
+                  ) : (
+                    "Published"
+                  )}
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </section>
+
       <section className="card admin-card">
         <h2>Create New Scenario</h2>
 
@@ -148,21 +209,6 @@ export default function AdminDashboard() {
 
           <button className="btn btn-primary" type="submit">
             Create Scenario
-          </button>
-        </form>
-
-        <form className="admin-form publish-form" onSubmit={publishScenario}>
-          <h2>Publish Scenario</h2>
-
-          <input
-            className="input"
-            placeholder="Scenario ID"
-            value={publishId}
-            onChange={(e) => setPublishId(e.target.value)}
-          />
-
-          <button className="btn btn-secondary" type="submit">
-            Publish Scenario
           </button>
         </form>
       </section>

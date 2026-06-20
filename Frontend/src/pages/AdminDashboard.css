@@ -62,3 +62,49 @@
   color: #716783;
   font-weight: 700;
 }
+
+
+.scenario-table-card {
+  margin-top: 28px;
+  padding: 28px;
+  overflow-x: auto;
+}
+
+.scenario-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.scenario-table th,
+.scenario-table td {
+  text-align: left;
+  padding: 14px;
+  border-bottom: 1px solid #eee5ff;
+}
+
+.scenario-table th {
+  color: #6b5ce7;
+}
+
+.published,
+.draft {
+  padding: 7px 12px;
+  border-radius: 999px;
+  font-weight: 800;
+  font-size: 13px;
+}
+
+.published {
+  background: #f0fff6;
+  color: #2f9e63;
+}
+
+.draft {
+  background: #fff7df;
+  color: #c98700;
+}
+
+.small-btn {
+  padding: 8px 14px;
+  font-size: 14px;
+}
