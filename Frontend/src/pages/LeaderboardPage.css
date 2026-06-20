@@ -1,0 +1,33 @@
+.leaderboard-card {
+  padding: 28px;
+}
+
+.leaderboard-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.leaderboard-table th,
+.leaderboard-table td {
+  padding: 14px;
+  border-bottom: 1px solid #eee;
+}
+
+.leaderboard-table th {
+  color: #6b5ce7;
+}
+
+.leaderboard-header h1 {
+  color: #6b5ce7;
+  font-size: 46px;
+}
+
+.leaderboard-table th,
+.leaderboard-table td {
+  text-align: center;
+  vertical-align: middle;
+}
+
+.leaderboard-table {
+  width: 100%;
+}

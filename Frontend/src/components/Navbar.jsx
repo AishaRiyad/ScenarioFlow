@@ -8,7 +8,11 @@ export default function Navbar() {
   const role = localStorage.getItem("role");
   const token = localStorage.getItem("token");
 
-  if (location.pathname === "/" || location.pathname === "/login" || location.pathname === "/register") {
+  if (
+    location.pathname === "/" ||
+    location.pathname === "/login" ||
+    location.pathname === "/register"
+  ) {
     return null;
   }
 
@@ -21,15 +25,26 @@ export default function Navbar() {
 
   return (
     <nav className="navbar card">
-      <Link to="/" className="nav-logo">ScenarioFlow 🌷</Link>
+      <Link to="/" className="nav-logo">
+        ScenarioFlow 🌷
+      </Link>
 
       <div className="nav-links">
-        {token && <Link to="/profile">Profile</Link>}
         {token && <Link to="/scenarios">Scenarios</Link>}
+
         {token && <Link to="/my-attempts">My Attempts</Link>}
+
+        {token && <Link to="/profile">Profile</Link>}
+
+        <Link to="/leaderboard">Leaderboard</Link>
+
         {role === "ADMIN" && <Link to="/admin">Admin</Link>}
+
         {role === "ADMIN" && <Link to="/admin/builder">Builder</Link>}
-        {role === "ADMIN" && <Link to="/admin/visual-builder">Visual Builder</Link>}
+
+        {role === "ADMIN" && (
+          <Link to="/admin/visual-builder">Visual Builder</Link>
+        )}
 
         <button className="btn btn-secondary" onClick={logout}>
           Logout

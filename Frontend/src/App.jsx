@@ -14,6 +14,8 @@ import MyAttemptsPage from "./pages/MyAttemptsPage";
 import ProfilePage from "./pages/ProfilePage";
 import ScenarioDetailsPage from "./pages/ScenarioDetailsPage";
 import VisualBuilderPage from "./pages/VisualBuilderPage";
+import LeaderboardPage from "./pages/LeaderboardPage";
+
 
 function App() {
   return (
@@ -33,6 +35,7 @@ function App() {
         <Route path="/profile" element={<ProfilePage />} />
         <Route path="/scenarios/:scenarioId" element={<ScenarioDetailsPage />} />
         <Route path="/admin/visual-builder" element={<VisualBuilderPage />} />
+        <Route path="/leaderboard" element={<LeaderboardPage />} />
       </Routes>
     </BrowserRouter>
   );

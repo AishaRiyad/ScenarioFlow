@@ -168,6 +168,37 @@ public class AttemptService {
                 .build();
     }
 
+    public List<LeaderboardEntryResponse> getLeaderboard() {
+
+        List<User> users = userRepository.findAll();
+
+        return users.stream()
+                .map(user -> {
+
+                    var attempts = attemptRepository.findByUser(user);
+
+                    long completed = attempts.stream()
+                            .filter(a -> Boolean.TRUE.equals(a.getCompleted()))
+                            .count();
+
+                    int bestScore = attempts.stream()
+                            .mapToInt(Attempt::getFinalScore)
+                            .max()
+                            .orElse(0);
+
+                    return LeaderboardEntryResponse.builder()
+                            .fullName(user.getFullName())
+                            .bestScore(bestScore)
+                            .completedAttempts(completed)
+                            .build();
+                })
+                .sorted((a, b) -> Integer.compare(
+                        b.getBestScore(),
+                        a.getBestScore()
+                ))
+                .toList();
+    }
+
     private PlayNodeResponse buildPlayNodeResponse(Attempt attempt, ScenarioNode node) {
         List<ChoiceResponse> choices = choiceRepository.findByNodeId(node.getId())
                 .stream()

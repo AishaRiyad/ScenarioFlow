@@ -34,4 +34,9 @@ public class AttemptController {
     public AttemptResultResponse result(@PathVariable Long attemptId) {
         return attemptService.getResult(attemptId);
     }
+
+    @GetMapping("/leaderboard")
+    public List<LeaderboardEntryResponse> getLeaderboard() {
+        return attemptService.getLeaderboard();
+    }
 }
