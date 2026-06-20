@@ -32,6 +32,9 @@ ScenarioFlow is a full-stack interactive decision-based simulation platform wher
 * Scenario search by keyword
 * Scenario filtering by category
 * PDF result report download
+* Scenario details page
+* Improved scenario builder with dropdowns and node preview
+
 
 ---
 
@@ -95,8 +98,9 @@ scenarioflow/
 * User
 * Scenario
 * ScenarioNode
-* ScenarioChoice
+* Choice
 * Attempt
+* AttemptStep
 * ScenarioRating
 
 ---
@@ -183,6 +187,7 @@ A regular registered account.
 #### Permissions
 
 * View published scenarios
+* View scenario details
 * Play scenarios
 * Submit choices
 * View results
@@ -210,6 +215,9 @@ Administrator account with advanced permissions.
 * Build decision trees
 * View dashboard statistics
 * Track total users, scenarios, attempts, completed attempts, and average score
+* Manage scenarios from dashboard
+* Publish scenarios directly from dashboard
+* Use improved builder workflow with dropdown selection and node preview
 
 ---
 
@@ -423,6 +431,47 @@ Expected Response:
 ---
 
 
+## Dashboard
+
+```http
+GET http://localhost:8083/api/dashboard/stats
+```
+
+---
+
+## Profile
+
+```http
+GET http://localhost:8083/api/users/me
+```
+
+```http
+PUT http://localhost:8083/api/users/me
+```
+
+---
+
+## Achievements
+
+```http
+GET http://localhost:8083/api/users/me/achievements
+```
+
+---
+
+## Ratings
+
+```http
+POST http://localhost:8083/api/ratings
+```
+
+```http
+GET http://localhost:8083/api/ratings/scenario/{scenarioId}
+```
+
+---
+
+
 ## Search Published Scenarios
 
 ```http
@@ -477,6 +526,23 @@ Authorization: Bearer USER_OR_ADMIN_TOKEN
 20. Get Achievements
 21. Submit Scenario Rating
 22. Get Dashboard Statistics
+
+---
+
+## Example User Journey
+
+1. Register account
+2. Login
+3. Browse published scenarios
+4. View scenario details
+5. Start scenario
+6. Make decisions
+7. Reach ending
+8. View result
+9. Download PDF report
+10. Rate scenario
+11. Unlock achievements
+12. View profile statistics
 
 ---
 
@@ -553,9 +619,10 @@ SELECT * FROM choices;
 | `/`                           | Landing Page                                        |
 | `/login`                      | Login Page                                          |
 | `/register`                   | Register Page                                       |
-| `/scenarios`                  | Published scenarios, search, and category filtering |
-| `/scenarios/:scenarioId/play` | Play Scenario                                       |
-| `/attempts/:attemptId/result` | Result page, rating, and PDF report download        |
+| `/scenarios`                  | Scenario list, search, and filtering                |
+| `/scenarios/:id`              | Scenario details page                               |
+| `/scenarios/:id/play`         | Play Scenario                                       |
+| `/attempts/:id/result`        | Result page, rating, and PDF report download        |
 | `/my-attempts`                | User Attempt History                                |
 | `/profile`                    | User profile, edit profile, and achievements        |
 | `/admin`                      | Admin Dashboard                                     |
@@ -566,14 +633,14 @@ SELECT * FROM choices;
 ## Future Improvements
 
 * Drag-and-drop decision tree builder
-* Scenario categories and filtering
-* Scenario search functionality
-* AI-generated feedback
-* AI-generated scenarios
-* Analytics dashboard enhancements
-* Scenario templates
+* AI-generated personalized feedback
+* Scenario comments and discussions
+* Leaderboards
+* Public scenario marketplace
+* Scenario cloning and templates
+* Email notifications
 * Docker deployment
-* Public demo version
+* Cloud hosting
 
 ---
 
