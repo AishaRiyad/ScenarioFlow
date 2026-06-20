@@ -29,6 +29,7 @@ export default function Navbar() {
         {token && <Link to="/my-attempts">My Attempts</Link>}
         {role === "ADMIN" && <Link to="/admin">Admin</Link>}
         {role === "ADMIN" && <Link to="/admin/builder">Builder</Link>}
+        {role === "ADMIN" && <Link to="/admin/visual-builder">Visual Builder</Link>}
 
         <button className="btn btn-secondary" onClick={logout}>
           Logout

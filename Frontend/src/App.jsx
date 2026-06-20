@@ -13,6 +13,7 @@ import ResultPage from "./pages/ResultPage";
 import MyAttemptsPage from "./pages/MyAttemptsPage";
 import ProfilePage from "./pages/ProfilePage";
 import ScenarioDetailsPage from "./pages/ScenarioDetailsPage";
+import VisualBuilderPage from "./pages/VisualBuilderPage";
 
 function App() {
   return (
@@ -31,6 +32,7 @@ function App() {
         <Route path="/my-attempts" element={<MyAttemptsPage />} />
         <Route path="/profile" element={<ProfilePage />} />
         <Route path="/scenarios/:scenarioId" element={<ScenarioDetailsPage />} />
+        <Route path="/admin/visual-builder" element={<VisualBuilderPage />} />
       </Routes>
     </BrowserRouter>
   );

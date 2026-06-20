@@ -1,0 +1,32 @@
+.visual-header h1 {
+  margin: 0;
+  font-size: 46px;
+  color: #6b5ce7;
+}
+
+.visual-header p {
+  color: #716783;
+  font-size: 18px;
+}
+
+.visual-selector {
+  margin-top: 24px;
+  padding: 24px;
+  max-width: 720px;
+}
+
+.flow-card {
+  margin-top: 28px;
+  height: 620px;
+  padding: 12px;
+  overflow: hidden;
+}
+
+.empty-flow {
+  height: 100%;
+  display: grid;
+  place-items: center;
+  color: #716783;
+  font-size: 20px;
+  font-weight: 700;
+}
