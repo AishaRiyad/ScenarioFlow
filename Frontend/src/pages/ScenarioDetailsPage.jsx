@@ -9,6 +9,7 @@ export default function ScenarioDetailsPage() {
 
   const [scenario, setScenario] = useState(null);
   const [rating, setRating] = useState(null);
+  const [recommendations, setRecommendations] = useState([]);
 
   const [comments, setComments] = useState([]);
   const [commentText, setCommentText] = useState("");
@@ -24,6 +25,9 @@ export default function ScenarioDetailsPage() {
 
       const commentsRes = await api.get(`/comments/scenario/${scenarioId}`);
       setComments(commentsRes.data);
+
+      const recRes = await api.get(`/scenarios/${scenarioId}/recommendations`);
+      setRecommendations(recRes.data);
     }
 
     fetchData();
@@ -94,6 +98,28 @@ export default function ScenarioDetailsPage() {
         >
           Start Scenario 🎮
         </button>
+
+        {recommendations.length > 0 && (
+          <section className="recommendations-section">
+            <h2>You may also like ✨</h2>
+
+            <div className="recommendations-grid">
+              {recommendations.map((item) => (
+                <div className="card recommendation-card" key={item.id}>
+                  <h3>{item.title}</h3>
+                  <p>{item.category}</p>
+
+                  <button
+                    className="btn btn-secondary"
+                    onClick={() => navigate(`/scenarios/${item.id}`)}
+                  >
+                    View
+                  </button>
+                </div>
+              ))}
+            </div>
+          </section>
+        )}
 
         <section className="comments-section">
           <h2>Community Comments 💬</h2>

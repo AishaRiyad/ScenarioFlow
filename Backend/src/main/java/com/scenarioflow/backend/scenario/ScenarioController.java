@@ -66,4 +66,9 @@ public class ScenarioController {
     public void deleteScenario(@PathVariable Long id) {
         scenarioService.deleteScenario(id);
     }
+
+    @GetMapping("/{id}/recommendations")
+    public List<Scenario> getRecommendations(@PathVariable Long id) {
+       return scenarioService.getRecommendations(id);
+    }
 }

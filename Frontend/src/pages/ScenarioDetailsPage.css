@@ -101,3 +101,25 @@
   font-size: 13px;
   color: #999;
 }
+
+.recommendations-section {
+  margin-top: 34px;
+}
+
+.recommendations-section h2 {
+  color: #6b5ce7;
+}
+
+.recommendations-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 16px;
+}
+
+.recommendation-card {
+  padding: 18px;
+}
+
+.recommendation-card h3 {
+  color: #6b5ce7;
+}

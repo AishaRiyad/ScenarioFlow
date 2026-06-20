@@ -43,57 +43,32 @@ public class ScenarioService {
         scenario.setStatus(ScenarioStatus.DRAFT);
 
         switch (request.getTemplateType()) {
-
             case JOB_INTERVIEW -> {
-                scenario.setTitle(
-                        request.getCustomTitle() != null
-                                ? request.getCustomTitle()
-                                : "Job Interview Simulation"
-                );
+                scenario.setTitle(request.getCustomTitle() != null ? request.getCustomTitle() : "Job Interview Simulation");
                 scenario.setDescription("Practice handling interview questions and decisions.");
                 scenario.setCategory("Career");
                 scenario.setDifficulty("Medium");
             }
-
             case CUSTOMER_SERVICE -> {
-                scenario.setTitle(
-                        request.getCustomTitle() != null
-                                ? request.getCustomTitle()
-                                : "Customer Service Challenge"
-                );
+                scenario.setTitle(request.getCustomTitle() != null ? request.getCustomTitle() : "Customer Service Challenge");
                 scenario.setDescription("Handle customer interactions and complaints.");
                 scenario.setCategory("Communication");
                 scenario.setDifficulty("Easy");
             }
-
             case LEADERSHIP -> {
-                scenario.setTitle(
-                        request.getCustomTitle() != null
-                                ? request.getCustomTitle()
-                                : "Leadership Decision Making"
-                );
+                scenario.setTitle(request.getCustomTitle() != null ? request.getCustomTitle() : "Leadership Decision Making");
                 scenario.setDescription("Lead a team through difficult situations.");
                 scenario.setCategory("Leadership");
                 scenario.setDifficulty("Hard");
             }
-
             case ETHICS -> {
-                scenario.setTitle(
-                        request.getCustomTitle() != null
-                                ? request.getCustomTitle()
-                                : "Ethical Decision Making"
-                );
+                scenario.setTitle(request.getCustomTitle() != null ? request.getCustomTitle() : "Ethical Decision Making");
                 scenario.setDescription("Analyze ethical dilemmas and choose actions.");
                 scenario.setCategory("Ethics");
                 scenario.setDifficulty("Medium");
             }
-
             case CONFLICT_RESOLUTION -> {
-                scenario.setTitle(
-                        request.getCustomTitle() != null
-                                ? request.getCustomTitle()
-                                : "Conflict Resolution Workshop"
-                );
+                scenario.setTitle(request.getCustomTitle() != null ? request.getCustomTitle() : "Conflict Resolution Workshop");
                 scenario.setDescription("Resolve workplace and team conflicts.");
                 scenario.setCategory("Communication");
                 scenario.setDifficulty("Medium");
@@ -130,6 +105,19 @@ public class ScenarioService {
     public Scenario getScenarioById(Long id) {
         return scenarioRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Scenario not found"));
+    }
+
+    public List<Scenario> getRecommendations(Long scenarioId) {
+        Scenario scenario = scenarioRepository.findById(scenarioId)
+                .orElseThrow(() -> new RuntimeException("Scenario not found"));
+
+        return scenarioRepository.findByStatusAndCategoryIgnoreCase(
+                        ScenarioStatus.PUBLISHED,
+                        scenario.getCategory()
+                ).stream()
+                .filter(s -> !s.getId().equals(scenarioId))
+                .limit(3)
+                .toList();
     }
 
     public List<Scenario> searchPublishedScenarios(
