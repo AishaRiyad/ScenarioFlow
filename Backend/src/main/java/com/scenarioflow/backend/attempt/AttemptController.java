@@ -31,8 +31,7 @@ public class AttemptController {
     }
 
     @GetMapping("/{attemptId}/result")
-    public AttemptResultResponse result(@PathVariable Long attemptId,
-                                        Authentication auth) {
-        return attemptService.getResult(attemptId, auth.getName());
+    public AttemptResultResponse result(@PathVariable Long attemptId) {
+        return attemptService.getResult(attemptId);
     }
 }

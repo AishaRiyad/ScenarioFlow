@@ -44,14 +44,21 @@ export default function ResultPage() {
     doc.text(`Attempt ID: ${attemptId}`, 20, 40);
     doc.text(`Final Score: ${String(result.finalScore ?? 0)}`, 20, 50);
     doc.text(`Result: ${resultMessage}`, 20, 60);
+    doc.text(`Decisions Count: ${result.decisionsCount}`, 20, 70);
 
-    doc.text("Feedback:", 20, 80);
-    doc.text(feedback, 20, 90, { maxWidth: 170 });
+    doc.text("Feedback:", 20, 85);
+    doc.text(feedback, 20, 95, { maxWidth: 170 });
+
+    doc.text("Strengths:", 20, 120);
+    doc.text(result.strengths || "", 20, 130, { maxWidth: 170 });
+
+    doc.text("Improvement Areas:", 20, 155);
+    doc.text(result.improvementAreas || "", 20, 165, { maxWidth: 170 });
 
     doc.text(
       `Generated at: ${new Date().toLocaleString()}`,
       20,
-      130
+      190
     );
 
     doc.save(`scenarioflow-result-${attemptId}.pdf`);
@@ -92,6 +99,23 @@ export default function ResultPage() {
             </div>
 
             <p>{result.feedback}</p>
+
+            <div className="insights-grid">
+              <div className="insight-card">
+                <h3>Decisions</h3>
+                <p>{result.decisionsCount}</p>
+              </div>
+
+              <div className="insight-card">
+                <h3>Strengths</h3>
+                <p>{result.strengths}</p>
+              </div>
+
+              <div className="insight-card">
+                <h3>Improvement Areas</h3>
+                <p>{result.improvementAreas}</p>
+              </div>
+            </div>
 
             {scenarioId && (
               <form className="rating-form" onSubmit={submitRating}>

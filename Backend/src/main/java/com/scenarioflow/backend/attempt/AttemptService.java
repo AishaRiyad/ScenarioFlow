@@ -103,27 +103,68 @@ public class AttemptService {
                 .toList();
     }
 
-    public AttemptResultResponse getResult(Long attemptId, String email) {
-        User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+    public AttemptResultResponse getResult(Long attemptId) {
 
         Attempt attempt = attemptRepository.findById(attemptId)
                 .orElseThrow(() -> new RuntimeException("Attempt not found"));
 
-        if (!attempt.getUser().getId().equals(user.getId())) {
-            throw new RuntimeException("You are not allowed to view this result");
+        if (!attempt.getCompleted()) {
+            throw new RuntimeException("Scenario not completed yet");
         }
 
-        String resultText = attempt.getCompleted()
-                ? "You completed this scenario successfully 🌟"
-                : "This scenario is not completed yet.";
+        var steps = stepRepository.findByAttemptIdOrderByStepOrderAsc(attemptId);
+
+        int score = attempt.getFinalScore();
+        int decisionsCount = steps.size();
+
+        long positiveChoices = steps.stream()
+                .filter(step -> step.getChoice().getScoreImpact() != null)
+                .filter(step -> step.getChoice().getScoreImpact() > 0)
+                .count();
+
+        long weakChoices = steps.stream()
+                .filter(step -> step.getChoice().getScoreImpact() != null)
+                .filter(step -> step.getChoice().getScoreImpact() <= 0)
+                .count();
+
+        String resultMessage;
+        String feedback;
+        String strengths;
+        String improvementAreas;
+
+        if (score >= 25) {
+            resultMessage = "Excellent performance";
+            feedback = "You showed strong decision-making and handled the scenario with confidence.";
+        } else if (score >= 15) {
+            resultMessage = "Good performance";
+            feedback = "You made mostly effective decisions, with a few areas that can be improved.";
+        } else {
+            resultMessage = "Needs improvement";
+            feedback = "Your choices show that you may need to slow down and analyze the situation more carefully.";
+        }
+
+        if (positiveChoices >= weakChoices) {
+            strengths = "You demonstrated good judgment and selected several constructive options.";
+        } else {
+            strengths = "You completed the scenario and engaged with the decision-making process.";
+        }
+
+        if (weakChoices == 0) {
+            improvementAreas = "Keep practicing with more complex scenarios to strengthen your consistency.";
+        } else if (weakChoices <= 2) {
+            improvementAreas = "Try to review the consequences of each option before making a decision.";
+        } else {
+            improvementAreas = "Focus on understanding the context and comparing options more carefully.";
+        }
 
         return AttemptResultResponse.builder()
                 .attemptId(attempt.getId())
-                .scenarioTitle(attempt.getScenario().getTitle())
-                .finalScore(attempt.getFinalScore())
-                .completed(attempt.getCompleted())
-                .resultText(resultText)
+                .finalScore(score)
+                .resultMessage(resultMessage)
+                .feedback(feedback)
+                .strengths(strengths)
+                .improvementAreas(improvementAreas)
+                .decisionsCount(decisionsCount)
                 .build();
     }
 
