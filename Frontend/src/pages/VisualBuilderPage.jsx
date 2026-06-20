@@ -1,9 +1,10 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import {
   ReactFlow,
   Background,
   Controls,
   MiniMap,
+  applyNodeChanges,
 } from "@xyflow/react";
 import "@xyflow/react/dist/style.css";
 
@@ -31,6 +32,10 @@ export default function VisualBuilderPage() {
     }
   }, [selectedScenarioId]);
 
+  const onNodesChange = useCallback((changes) => {
+    setFlowNodes((nds) => applyNodeChanges(changes, nds));
+  }, []);
+
   async function fetchFlowData(scenarioId) {
     const res = await api.get(`/nodes/scenario/${scenarioId}`);
     const nodes = res.data;
@@ -38,8 +43,8 @@ export default function VisualBuilderPage() {
     const mappedNodes = nodes.map((node, index) => ({
       id: String(node.id),
       position: {
-        x: 120 + (index % 3) * 280,
-        y: 100 + Math.floor(index / 3) * 180,
+        x: node.positionX ?? 120 + (index % 3) * 280,
+        y: node.positionY ?? 100 + Math.floor(index / 3) * 180,
       },
       data: {
         label: `${node.nodeType}: ${node.title}`,
@@ -68,6 +73,23 @@ export default function VisualBuilderPage() {
     setFlowEdges(mappedEdges);
   }
 
+  async function savePositions() {
+    try {
+      await Promise.all(
+        flowNodes.map((node) =>
+          api.patch(`/nodes/${node.id}/position`, {
+            positionX: node.position.x,
+            positionY: node.position.y,
+          })
+        )
+      );
+
+      alert("Positions saved successfully ✨");
+    } catch {
+      alert("Could not save positions");
+    }
+  }
+
   return (
     <main className="page visual-builder-page">
       <header className="visual-header">
@@ -92,11 +114,25 @@ export default function VisualBuilderPage() {
 
       <section className="card flow-card">
         {selectedScenarioId ? (
-          <ReactFlow nodes={flowNodes} edges={flowEdges} fitView>
-            <Background />
-            <Controls />
-            <MiniMap />
-          </ReactFlow>
+          <>
+            <button
+              className="btn btn-primary save-flow-btn"
+              onClick={savePositions}
+            >
+              Save Layout
+            </button>
+
+            <ReactFlow
+              nodes={flowNodes}
+              edges={flowEdges}
+              onNodesChange={onNodesChange}
+              fitView
+            >
+              <Background />
+              <Controls />
+              <MiniMap />
+            </ReactFlow>
+          </>
         ) : (
           <div className="empty-flow">Choose a scenario to view its tree ✨</div>
         )}

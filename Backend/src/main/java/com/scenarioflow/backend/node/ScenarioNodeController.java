@@ -22,4 +22,12 @@ public class ScenarioNodeController {
     public List<NodeResponse> getNodesByScenario(@PathVariable Long scenarioId) {
         return scenarioNodeService.getNodesWithChoices(scenarioId);
     }
+
+    @PatchMapping("/{nodeId}/position")
+    public ScenarioNode updatePosition(
+            @PathVariable Long nodeId,
+            @RequestBody @Valid UpdateNodePositionRequest request
+    ) {
+        return scenarioNodeService.updatePosition(nodeId, request);
+    }
 }

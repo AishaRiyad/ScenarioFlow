@@ -68,8 +68,20 @@ public class ScenarioNodeService {
                     .nodeType(node.getNodeType())
                     .feedbackText(node.getFeedbackText())
                     .scoreValue(node.getScoreValue())
+                    .positionX(node.getPositionX())
+                    .positionY(node.getPositionY())
                     .choices(choices)
                     .build();
         }).toList();
+    }
+
+    public ScenarioNode updatePosition(Long nodeId, UpdateNodePositionRequest request) {
+        ScenarioNode node = scenarioNodeRepository.findById(nodeId)
+                .orElseThrow(() -> new RuntimeException("Node not found"));
+
+        node.setPositionX(request.getPositionX());
+        node.setPositionY(request.getPositionY());
+
+        return scenarioNodeRepository.save(node);
     }
 }

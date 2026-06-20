@@ -36,4 +36,11 @@ public class ScenarioNode {
 
     @Column(name = "score_value")
     private Integer scoreValue;
+
+    @Column(name = "position_x")
+    private Double positionX;
+
+    @Column(name = "position_y")
+    private Double positionY;
+    
 }
