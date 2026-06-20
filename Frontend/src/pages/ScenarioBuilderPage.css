@@ -39,3 +39,49 @@
     grid-template-columns: 1fr;
   }
 }
+
+.builder-selector {
+  margin-top: 24px;
+  padding: 26px;
+  max-width: 680px;
+}
+
+.nodes-preview {
+  margin-top: 28px;
+  padding: 30px;
+}
+
+.nodes-list {
+  display: grid;
+  gap: 16px;
+}
+
+.node-preview {
+  background: white;
+  border-radius: 22px;
+  padding: 18px;
+  box-shadow: 0 12px 30px rgba(93, 74, 120, 0.1);
+}
+
+.node-preview h3 {
+  margin: 0 0 8px;
+  color: #6b5ce7;
+}
+
+.node-preview span {
+  display: inline-block;
+  background: #fff0f7;
+  color: #ff5fa2;
+  padding: 6px 12px;
+  border-radius: 999px;
+  font-weight: 800;
+}
+
+.node-preview p {
+  color: #716783;
+}
+
+.node-preview li {
+  margin-bottom: 6px;
+  color: #2b2540;
+}
