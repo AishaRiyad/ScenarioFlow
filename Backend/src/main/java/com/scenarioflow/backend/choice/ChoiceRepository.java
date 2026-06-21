@@ -6,4 +6,5 @@ import java.util.List;
 
 public interface ChoiceRepository extends JpaRepository<Choice, Long> {
     List<Choice> findByNodeId(Long nodeId);
+    List<Choice> findByNodeScenarioId(Long scenarioId);
 }

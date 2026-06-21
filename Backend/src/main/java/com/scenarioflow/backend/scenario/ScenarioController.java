@@ -76,4 +76,10 @@ public class ScenarioController {
     public List<Scenario> getRecommendations(@PathVariable Long id) {
         return scenarioService.getRecommendations(id);
     }
+
+
+    @PostMapping("/{id}/clone")
+    public Scenario cloneScenario(@PathVariable Long id) {
+        return scenarioService.cloneScenario(id);
+    }
 }

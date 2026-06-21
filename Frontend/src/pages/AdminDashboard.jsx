@@ -106,6 +106,19 @@ export default function AdminDashboard() {
     }
   }
 
+  async function cloneScenario(id) {
+    setMessage("");
+
+    try {
+      await api.post(`/scenarios/${id}/clone`);
+
+      setMessage("Scenario cloned successfully 📋");
+      fetchScenarios();
+    } catch {
+      setMessage("Could not clone scenario");
+    }
+  }
+
   async function deleteScenario(id) {
     const confirmed = window.confirm(
       "Are you sure you want to delete this scenario?"
@@ -240,6 +253,13 @@ export default function AdminDashboard() {
                       Unpublish
                     </button>
                   )}
+
+                  <button
+                    className="btn btn-secondary small-btn"
+                    onClick={() => cloneScenario(scenario.id)}
+                  >
+                    Clone
+                  </button>
 
                   <button
                     className="btn btn-danger small-btn"

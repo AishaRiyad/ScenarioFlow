@@ -14,7 +14,11 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+
+
 import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
@@ -26,6 +30,8 @@ public class ScenarioService {
     private final ChoiceRepository choiceRepository;
     private final AttemptRepository attemptRepository;
     private final AttemptStepRepository attemptStepRepository;
+
+
 
     public Scenario createScenario(CreateScenarioRequest request, String currentUserEmail) {
         User user = userRepository.findByEmail(currentUserEmail)
@@ -292,4 +298,61 @@ public class ScenarioService {
 
         return scenarioRepository.findByStatus(ScenarioStatus.PUBLISHED);
     }
+
+
+    public Scenario cloneScenario(Long scenarioId) {
+    Scenario original = scenarioRepository.findById(scenarioId)
+            .orElseThrow(() -> new RuntimeException("Scenario not found"));
+
+    Scenario clonedScenario = Scenario.builder()
+            .title(original.getTitle() + " Copy")
+            .description(original.getDescription())
+            .category(original.getCategory())
+            .difficulty(original.getDifficulty())
+            .status(ScenarioStatus.DRAFT)
+            .createdBy(original.getCreatedBy())
+            .build();
+
+    Scenario savedClone = scenarioRepository.save(clonedScenario);
+
+    Map<Long, ScenarioNode> nodeMap = new HashMap<>();
+
+    var originalNodes = scenarioNodeRepository.findByScenarioId(original.getId());
+
+    for (ScenarioNode originalNode : originalNodes) {
+        ScenarioNode clonedNode = ScenarioNode.builder()
+                .scenario(savedClone)
+                .title(originalNode.getTitle())
+                .content(originalNode.getContent())
+                .nodeType(originalNode.getNodeType())
+                .feedbackText(originalNode.getFeedbackText())
+                .scoreValue(originalNode.getScoreValue())
+                .positionX(originalNode.getPositionX())
+                .positionY(originalNode.getPositionY())
+                .build();
+
+        ScenarioNode savedNode = scenarioNodeRepository.save(clonedNode);
+        nodeMap.put(originalNode.getId(), savedNode);
+    }
+
+    var originalChoices = choiceRepository.findByNodeScenarioId(original.getId());
+
+    for (Choice originalChoice : originalChoices) {
+        ScenarioNode clonedCurrentNode = nodeMap.get(originalChoice.getNode().getId());
+        ScenarioNode clonedNextNode = nodeMap.get(originalChoice.getNextNode().getId());
+
+        if (clonedCurrentNode != null && clonedNextNode != null) {
+            Choice clonedChoice = Choice.builder()
+                    .node(clonedCurrentNode)
+                    .choiceText(originalChoice.getChoiceText())
+                    .nextNode(clonedNextNode)
+                    .scoreImpact(originalChoice.getScoreImpact())
+                    .build();
+
+            choiceRepository.save(clonedChoice);
+        }
+    }
+
+    return savedClone;
+}
 }

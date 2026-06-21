@@ -119,3 +119,9 @@
   color: white;
   margin-left: 8px;
 }
+
+.scenario-table td:last-child {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
