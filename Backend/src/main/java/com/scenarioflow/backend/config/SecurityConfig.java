@@ -41,6 +41,12 @@ public class SecurityConfig {
                 )
                 .userDetailsService(customUserDetailsService)
                 .authorizeHttpRequests(auth -> auth
+                        .requestMatchers(
+                                "/swagger-ui/**",
+                                "/swagger-ui.html",
+                                "/v3/api-docs/**"
+                        ).permitAll()
+
                         .requestMatchers("/api/auth/**").permitAll()
 
                         .requestMatchers("/api/scenarios/published").authenticated()
