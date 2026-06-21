@@ -91,22 +91,24 @@ export default function AdminDashboard() {
     }
   }
 
-  async function deleteScenario(id) {
-    const confirmed = window.confirm(
-      "Are you sure you want to delete this scenario?"
-    );
+ async function deleteScenario(id) {
+  const confirmed = window.confirm(
+    "Are you sure you want to delete this scenario?"
+  );
 
-    if (!confirmed) return;
+  if (!confirmed) return;
 
-    try {
-      await api.delete(`/scenarios/${id}`);
+  try {
+    await api.delete(`/scenarios/${id}`);
 
-      setMessage("Scenario deleted successfully 🗑️");
-      fetchScenarios();
-    } catch {
-      setMessage("Could not delete scenario");
-    }
+    setMessage("Scenario deleted successfully 🗑️");
+    fetchScenarios();
+  } catch (err) {
+    console.error(err);
+    console.log(err.response?.data);
+    setMessage(err.response?.data?.message || "Could not delete scenario");
   }
+}
 
   return (
     <main className="page admin-page">

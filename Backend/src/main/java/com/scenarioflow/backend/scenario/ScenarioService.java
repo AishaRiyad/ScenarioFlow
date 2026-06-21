@@ -1,9 +1,18 @@
 package com.scenarioflow.backend.scenario;
 
+import com.scenarioflow.backend.attempt.Attempt;
+import com.scenarioflow.backend.attempt.AttemptRepository;
+import com.scenarioflow.backend.attempt.AttemptStepRepository;
+import com.scenarioflow.backend.choice.Choice;
+import com.scenarioflow.backend.choice.ChoiceRepository;
+import com.scenarioflow.backend.node.NodeType;
+import com.scenarioflow.backend.node.ScenarioNode;
+import com.scenarioflow.backend.node.ScenarioNodeRepository;
 import com.scenarioflow.backend.user.User;
 import com.scenarioflow.backend.user.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -13,6 +22,10 @@ public class ScenarioService {
 
     private final ScenarioRepository scenarioRepository;
     private final UserRepository userRepository;
+    private final ScenarioNodeRepository scenarioNodeRepository;
+    private final ChoiceRepository choiceRepository;
+    private final AttemptRepository attemptRepository;
+    private final AttemptStepRepository attemptStepRepository;
 
     public Scenario createScenario(CreateScenarioRequest request, String currentUserEmail) {
         User user = userRepository.findByEmail(currentUserEmail)
@@ -30,6 +43,7 @@ public class ScenarioService {
         return scenarioRepository.save(scenario);
     }
 
+    @Transactional
     public Scenario createFromTemplate(
             CreateScenarioFromTemplateRequest request,
             String currentUserEmail
@@ -38,44 +52,152 @@ public class ScenarioService {
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
         Scenario scenario = new Scenario();
-
         scenario.setCreatedBy(user);
         scenario.setStatus(ScenarioStatus.DRAFT);
+
+        String startTitle;
+        String startContent;
+        String decisionTitle;
+        String decisionContent;
+        String endTitle;
+        String endContent;
+        String choiceOne;
+        String choiceTwo;
 
         switch (request.getTemplateType()) {
             case JOB_INTERVIEW -> {
                 scenario.setTitle(request.getCustomTitle() != null ? request.getCustomTitle() : "Job Interview Simulation");
-                scenario.setDescription("Practice handling interview questions and decisions.");
+                scenario.setDescription("Practice handling interview questions and professional decisions.");
                 scenario.setCategory("Career");
                 scenario.setDifficulty("Medium");
+                startTitle = "Interview Begins";
+                startContent = "You enter the interview room and meet the hiring manager.";
+                decisionTitle = "First Question";
+                decisionContent = "The interviewer asks you to introduce yourself.";
+                endTitle = "Interview Completed";
+                endContent = "The interview ends and your performance is evaluated.";
+                choiceOne = "Greet confidently and sit calmly";
+                choiceTwo = "Answer with clear examples";
             }
             case CUSTOMER_SERVICE -> {
                 scenario.setTitle(request.getCustomTitle() != null ? request.getCustomTitle() : "Customer Service Challenge");
-                scenario.setDescription("Handle customer interactions and complaints.");
+                scenario.setDescription("Handle customer interactions and solve complaints professionally.");
                 scenario.setCategory("Communication");
                 scenario.setDifficulty("Easy");
+                startTitle = "Customer Complaint";
+                startContent = "A customer contacts you angrily about a delayed order.";
+                decisionTitle = "Respond to the Customer";
+                decisionContent = "You need to choose how to respond to calm the situation.";
+                endTitle = "Issue Resolved";
+                endContent = "The customer feels heard and the issue is handled.";
+                choiceOne = "Listen carefully and apologize";
+                choiceTwo = "Offer a clear solution";
             }
             case LEADERSHIP -> {
                 scenario.setTitle(request.getCustomTitle() != null ? request.getCustomTitle() : "Leadership Decision Making");
-                scenario.setDescription("Lead a team through difficult situations.");
+                scenario.setDescription("Lead a team through a difficult decision.");
                 scenario.setCategory("Leadership");
                 scenario.setDifficulty("Hard");
+                startTitle = "Team Problem";
+                startContent = "Your team is struggling to finish an important task on time.";
+                decisionTitle = "Choose Your Leadership Style";
+                decisionContent = "You must decide how to guide the team.";
+                endTitle = "Team Stabilized";
+                endContent = "The team regains focus and continues working.";
+                choiceOne = "Ask the team about blockers";
+                choiceTwo = "Create a clear action plan";
             }
             case ETHICS -> {
                 scenario.setTitle(request.getCustomTitle() != null ? request.getCustomTitle() : "Ethical Decision Making");
-                scenario.setDescription("Analyze ethical dilemmas and choose actions.");
+                scenario.setDescription("Analyze ethical dilemmas and choose responsible actions.");
                 scenario.setCategory("Ethics");
                 scenario.setDifficulty("Medium");
+                startTitle = "Ethical Dilemma";
+                startContent = "You notice a teammate taking credit for someone else's work.";
+                decisionTitle = "Choose Your Response";
+                decisionContent = "You need to decide how to handle the situation fairly.";
+                endTitle = "Ethical Action Taken";
+                endContent = "You respond in a way that supports fairness and respect.";
+                choiceOne = "Speak privately with the teammate";
+                choiceTwo = "Encourage giving proper credit";
             }
             case CONFLICT_RESOLUTION -> {
                 scenario.setTitle(request.getCustomTitle() != null ? request.getCustomTitle() : "Conflict Resolution Workshop");
-                scenario.setDescription("Resolve workplace and team conflicts.");
+                scenario.setDescription("Resolve workplace and team conflicts constructively.");
                 scenario.setCategory("Communication");
                 scenario.setDifficulty("Medium");
+                startTitle = "Conflict Starts";
+                startContent = "Two team members strongly disagree during a meeting.";
+                decisionTitle = "Manage the Conflict";
+                decisionContent = "You need to choose how to reduce tension.";
+                endTitle = "Conflict Resolved";
+                endContent = "The team members understand each other better.";
+                choiceOne = "Let each person explain calmly";
+                choiceTwo = "Find a shared goal";
             }
+            default -> throw new RuntimeException("Unsupported template type");
         }
 
-        return scenarioRepository.save(scenario);
+        Scenario savedScenario = scenarioRepository.saveAndFlush(scenario);
+
+        ScenarioNode startNode = scenarioNodeRepository.save(
+                ScenarioNode.builder()
+                        .scenario(savedScenario)
+                        .title(startTitle)
+                        .content(startContent)
+                        .nodeType(NodeType.START)
+                        .feedbackText("Scenario started.")
+                        .scoreValue(0)
+                        .positionX(120.0)
+                        .positionY(120.0)
+                        .build()
+        );
+
+        ScenarioNode decisionNode = scenarioNodeRepository.save(
+                ScenarioNode.builder()
+                        .scenario(savedScenario)
+                        .title(decisionTitle)
+                        .content(decisionContent)
+                        .nodeType(NodeType.DECISION)
+                        .feedbackText("Consider your options carefully.")
+                        .scoreValue(5)
+                        .positionX(420.0)
+                        .positionY(120.0)
+                        .build()
+        );
+
+        ScenarioNode endNode = scenarioNodeRepository.save(
+                ScenarioNode.builder()
+                        .scenario(savedScenario)
+                        .title(endTitle)
+                        .content(endContent)
+                        .nodeType(NodeType.END)
+                        .feedbackText("Scenario completed.")
+                        .scoreValue(10)
+                        .positionX(720.0)
+                        .positionY(120.0)
+                        .build()
+        );
+
+        choiceRepository.save(
+                Choice.builder()
+                        .node(startNode)
+                        .choiceText(choiceOne)
+                        .nextNode(decisionNode)
+                        .scoreImpact(5)
+                        .build()
+        );
+
+        choiceRepository.save(
+                Choice.builder()
+                        .node(decisionNode)
+                        .choiceText(choiceTwo)
+                        .nextNode(endNode)
+                        .scoreImpact(10)
+                        .build()
+        );
+
+        return savedScenario;
     }
 
     public Scenario publishScenario(Long scenarioId) {
@@ -83,14 +205,39 @@ public class ScenarioService {
                 .orElseThrow(() -> new RuntimeException("Scenario not found"));
 
         scenario.setStatus(ScenarioStatus.PUBLISHED);
-
         return scenarioRepository.save(scenario);
     }
 
+    @Transactional
     public void deleteScenario(Long scenarioId) {
         Scenario scenario = scenarioRepository.findById(scenarioId)
                 .orElseThrow(() -> new RuntimeException("Scenario not found"));
 
+        List<Attempt> attempts = attemptRepository.findByScenarioId(scenarioId);
+
+        for (Attempt attempt : attempts) {
+            attemptStepRepository.deleteAll(
+                    attemptStepRepository.findByAttemptIdOrderByStepOrderAsc(attempt.getId())
+            );
+        }
+
+        attemptRepository.deleteAll(attempts);
+
+        List<ScenarioNode> nodes = scenarioNodeRepository.findByScenarioId(scenarioId);
+
+        for (ScenarioNode node : nodes) {
+            List<Choice> choices = choiceRepository.findByNodeId(node.getId());
+
+            for (Choice choice : choices) {
+                attemptStepRepository.deleteAll(
+                        attemptStepRepository.findByChoiceId(choice.getId())
+                );
+            }
+
+            choiceRepository.deleteAll(choices);
+        }
+
+        scenarioNodeRepository.deleteAll(nodes);
         scenarioRepository.delete(scenario);
     }
 
@@ -120,10 +267,7 @@ public class ScenarioService {
                 .toList();
     }
 
-    public List<Scenario> searchPublishedScenarios(
-            String category,
-            String keyword
-    ) {
+    public List<Scenario> searchPublishedScenarios(String category, String keyword) {
         if (category != null && !category.isBlank()) {
             return scenarioRepository.findByStatusAndCategoryIgnoreCase(
                     ScenarioStatus.PUBLISHED,

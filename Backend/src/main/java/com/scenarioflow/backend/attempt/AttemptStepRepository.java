@@ -6,4 +6,6 @@ import java.util.List;
 
 public interface AttemptStepRepository extends JpaRepository<AttemptStep, Long> {
     List<AttemptStep> findByAttemptIdOrderByStepOrderAsc(Long attemptId);
+    List<AttemptStep> findByChoiceId(Long choiceId);
 }
+

@@ -9,4 +9,6 @@ public interface AttemptRepository extends JpaRepository<Attempt, Long> {
 
     List<Attempt> findByUser(User user);
 
+    List<Attempt> findByScenarioId(Long scenarioId);
+
 }
