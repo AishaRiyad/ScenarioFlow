@@ -208,6 +208,14 @@ public class ScenarioService {
         return scenarioRepository.save(scenario);
     }
 
+    public Scenario unpublishScenario(Long scenarioId) {
+        Scenario scenario = scenarioRepository.findById(scenarioId)
+                .orElseThrow(() -> new RuntimeException("Scenario not found"));
+
+        scenario.setStatus(ScenarioStatus.DRAFT);
+        return scenarioRepository.save(scenario);
+    }
+
     @Transactional
     public void deleteScenario(Long scenarioId) {
         Scenario scenario = scenarioRepository.findById(scenarioId)

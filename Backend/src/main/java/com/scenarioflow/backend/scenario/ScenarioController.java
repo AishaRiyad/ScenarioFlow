@@ -51,6 +51,11 @@ public class ScenarioController {
         return scenarioService.publishScenario(scenarioId);
     }
 
+    @PatchMapping("/{scenarioId}/unpublish")
+    public Scenario unpublishScenario(@PathVariable Long scenarioId) {
+        return scenarioService.unpublishScenario(scenarioId);
+    }
+
     @PostMapping("/template")
     public Scenario createFromTemplate(
             @RequestBody @Valid CreateScenarioFromTemplateRequest request,
@@ -69,6 +74,6 @@ public class ScenarioController {
 
     @GetMapping("/{id}/recommendations")
     public List<Scenario> getRecommendations(@PathVariable Long id) {
-       return scenarioService.getRecommendations(id);
+        return scenarioService.getRecommendations(id);
     }
 }

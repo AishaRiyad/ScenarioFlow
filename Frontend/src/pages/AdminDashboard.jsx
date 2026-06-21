@@ -66,6 +66,8 @@ export default function AdminDashboard() {
   }
 
   async function createTemplateScenario() {
+    setMessage("");
+
     try {
       await api.post("/scenarios/template", {
         templateType,
@@ -91,24 +93,39 @@ export default function AdminDashboard() {
     }
   }
 
- async function deleteScenario(id) {
-  const confirmed = window.confirm(
-    "Are you sure you want to delete this scenario?"
-  );
+  async function unpublishScenario(id) {
+    setMessage("");
 
-  if (!confirmed) return;
+    try {
+      await api.patch(`/scenarios/${id}/unpublish`);
 
-  try {
-    await api.delete(`/scenarios/${id}`);
-
-    setMessage("Scenario deleted successfully 🗑️");
-    fetchScenarios();
-  } catch (err) {
-    console.error(err);
-    console.log(err.response?.data);
-    setMessage(err.response?.data?.message || "Could not delete scenario");
+      setMessage("Scenario unpublished successfully 🌙");
+      fetchScenarios();
+    } catch {
+      setMessage("Could not unpublish scenario");
+    }
   }
-}
+
+  async function deleteScenario(id) {
+    const confirmed = window.confirm(
+      "Are you sure you want to delete this scenario?"
+    );
+
+    if (!confirmed) return;
+
+    setMessage("");
+
+    try {
+      await api.delete(`/scenarios/${id}`);
+
+      setMessage("Scenario deleted successfully 🗑️");
+      fetchScenarios();
+    } catch (err) {
+      console.error(err);
+      console.log(err.response?.data);
+      setMessage(err.response?.data?.message || "Could not delete scenario");
+    }
+  }
 
   return (
     <main className="page admin-page">
@@ -169,10 +186,7 @@ export default function AdminDashboard() {
           <option value="CONFLICT_RESOLUTION">Conflict Resolution</option>
         </select>
 
-        <button
-          className="btn btn-primary"
-          onClick={createTemplateScenario}
-        >
+        <button className="btn btn-primary" onClick={createTemplateScenario}>
           Create Template
         </button>
       </section>
@@ -203,9 +217,7 @@ export default function AdminDashboard() {
                 <td>
                   <span
                     className={
-                      scenario.status === "PUBLISHED"
-                        ? "published"
-                        : "draft"
+                      scenario.status === "PUBLISHED" ? "published" : "draft"
                     }
                   >
                     {scenario.status}
@@ -221,7 +233,12 @@ export default function AdminDashboard() {
                       Publish
                     </button>
                   ) : (
-                    <span>Published</span>
+                    <button
+                      className="btn btn-secondary small-btn"
+                      onClick={() => unpublishScenario(scenario.id)}
+                    >
+                      Unpublish
+                    </button>
                   )}
 
                   <button
