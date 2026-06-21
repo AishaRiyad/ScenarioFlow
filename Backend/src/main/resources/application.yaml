@@ -3,9 +3,9 @@ spring:
     name: backend
 
   datasource:
-    url: jdbc:mysql://localhost:3306/scenarioflow
-    username: root
-    password:
+    url: ${SPRING_DATASOURCE_URL:jdbc:mysql://localhost:3306/scenarioflow}
+    username: ${SPRING_DATASOURCE_USERNAME:root}
+    password: ${SPRING_DATASOURCE_PASSWORD:}
 
   jpa:
     hibernate:
@@ -16,11 +16,11 @@ spring:
         dialect: org.hibernate.dialect.MySQLDialect
 
 server:
-  port: 8083
+  port: ${SERVER_PORT:8083}
 
 jwt:
-  secret: your-very-long-secret-key-that-is-at-least-32-characters
-  expiration: 86400000
+  secret: ${JWT_SECRET:your-very-long-secret-key-that-is-at-least-32-characters}
+  expiration: ${JWT_EXPIRATION:86400000}
 
 springdoc:
   swagger-ui:

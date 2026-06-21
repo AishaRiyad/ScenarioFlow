@@ -1,0 +1,40 @@
+services:
+  mysql:
+    image: mysql:8.4
+    container_name: scenarioflow-mysql
+    restart: always
+    environment:
+      MYSQL_DATABASE: scenarioflow
+      MYSQL_ROOT_PASSWORD: root
+    ports:
+      - "3307:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+
+  backend:
+    build: ./backend
+    container_name: scenarioflow-backend
+    restart: always
+    depends_on:
+      - mysql
+    environment:
+      SERVER_PORT: 8083
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/scenarioflow
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: root
+      JWT_SECRET: your-very-long-secret-key-that-is-at-least-32-characters
+      JWT_EXPIRATION: 86400000
+    ports:
+      - "8083:8083"
+
+  frontend:
+    build: ./frontend
+    container_name: scenarioflow-frontend
+    restart: always
+    depends_on:
+      - backend
+    ports:
+      - "5173:80"
+
+volumes:
+  mysql_data:
