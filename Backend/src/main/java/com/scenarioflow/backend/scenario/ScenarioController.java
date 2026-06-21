@@ -82,4 +82,9 @@ public class ScenarioController {
     public Scenario cloneScenario(@PathVariable Long id) {
         return scenarioService.cloneScenario(id);
     }
+
+    @GetMapping("/{id}/validate")
+    public ScenarioValidationResponse validateScenario(@PathVariable Long id) {
+       return scenarioService.validateScenario(id);
+   }
 }

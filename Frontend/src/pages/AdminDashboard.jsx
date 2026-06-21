@@ -80,6 +80,22 @@ export default function AdminDashboard() {
     }
   }
 
+  async function validateScenario(id) {
+    setMessage("");
+
+    try {
+      const res = await api.get(`/scenarios/${id}/validate`);
+
+      if (res.data.valid) {
+        setMessage("Scenario is valid and ready to publish ✅");
+      } else {
+        setMessage("Validation errors: " + res.data.errors.join(" | "));
+      }
+    } catch {
+      setMessage("Could not validate scenario");
+    }
+  }
+
   async function publishScenario(id) {
     setMessage("");
 
@@ -238,6 +254,13 @@ export default function AdminDashboard() {
                 </td>
 
                 <td>
+                  <button
+                    className="btn btn-secondary small-btn"
+                    onClick={() => validateScenario(scenario.id)}
+                  >
+                    Validate
+                  </button>
+
                   {scenario.status !== "PUBLISHED" ? (
                     <button
                       className="btn btn-primary small-btn"

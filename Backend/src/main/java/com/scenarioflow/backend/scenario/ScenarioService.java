@@ -14,8 +14,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-
-
+import java.util.ArrayList;
 import java.util.List;
 import java.util.HashMap;
 import java.util.Map;
@@ -30,8 +29,6 @@ public class ScenarioService {
     private final ChoiceRepository choiceRepository;
     private final AttemptRepository attemptRepository;
     private final AttemptStepRepository attemptStepRepository;
-
-
 
     public Scenario createScenario(CreateScenarioRequest request, String currentUserEmail) {
         User user = userRepository.findByEmail(currentUserEmail)
@@ -206,11 +203,67 @@ public class ScenarioService {
         return savedScenario;
     }
 
+    public ScenarioValidationResponse validateScenario(Long scenarioId) {
+        Scenario scenario = scenarioRepository.findById(scenarioId)
+                .orElseThrow(() -> new RuntimeException("Scenario not found"));
+
+        var nodes = scenarioNodeRepository.findByScenarioId(scenario.getId());
+        List<String> errors = new ArrayList<>();
+
+        long startCount = nodes.stream()
+                .filter(node -> node.getNodeType() == NodeType.START)
+                .count();
+
+        long endCount = nodes.stream()
+                .filter(node -> node.getNodeType() == NodeType.END)
+                .count();
+
+        if (startCount == 0) {
+            errors.add("Scenario must have one START node.");
+        }
+
+        if (startCount > 1) {
+            errors.add("Scenario cannot have more than one START node.");
+        }
+
+        if (endCount == 0) {
+            errors.add("Scenario must have at least one END node.");
+        }
+
+        for (ScenarioNode node : nodes) {
+            if (node.getNodeType() != NodeType.END) {
+                var choices = choiceRepository.findByNodeId(node.getId());
+
+                if (choices.isEmpty()) {
+                    errors.add("Node '" + node.getTitle() + "' must have at least one choice.");
+                }
+
+                for (var choice : choices) {
+                    if (choice.getNextNode() == null) {
+                        errors.add("Choice '" + choice.getChoiceText() + "' must point to a next node.");
+                    }
+                }
+            }
+        }
+
+        return ScenarioValidationResponse.builder()
+                .valid(errors.isEmpty())
+                .errors(errors)
+                .build();
+    }
+
     public Scenario publishScenario(Long scenarioId) {
+        ScenarioValidationResponse validation = validateScenario(scenarioId);
+
+        if (!validation.isValid()) {
+            throw new RuntimeException("Scenario is not valid: " + String.join(" | ", validation.getErrors()));
+        }
+
         Scenario scenario = scenarioRepository.findById(scenarioId)
                 .orElseThrow(() -> new RuntimeException("Scenario not found"));
 
         scenario.setStatus(ScenarioStatus.PUBLISHED);
+
         return scenarioRepository.save(scenario);
     }
 
@@ -299,60 +352,59 @@ public class ScenarioService {
         return scenarioRepository.findByStatus(ScenarioStatus.PUBLISHED);
     }
 
-
     public Scenario cloneScenario(Long scenarioId) {
-    Scenario original = scenarioRepository.findById(scenarioId)
-            .orElseThrow(() -> new RuntimeException("Scenario not found"));
+        Scenario original = scenarioRepository.findById(scenarioId)
+                .orElseThrow(() -> new RuntimeException("Scenario not found"));
 
-    Scenario clonedScenario = Scenario.builder()
-            .title(original.getTitle() + " Copy")
-            .description(original.getDescription())
-            .category(original.getCategory())
-            .difficulty(original.getDifficulty())
-            .status(ScenarioStatus.DRAFT)
-            .createdBy(original.getCreatedBy())
-            .build();
-
-    Scenario savedClone = scenarioRepository.save(clonedScenario);
-
-    Map<Long, ScenarioNode> nodeMap = new HashMap<>();
-
-    var originalNodes = scenarioNodeRepository.findByScenarioId(original.getId());
-
-    for (ScenarioNode originalNode : originalNodes) {
-        ScenarioNode clonedNode = ScenarioNode.builder()
-                .scenario(savedClone)
-                .title(originalNode.getTitle())
-                .content(originalNode.getContent())
-                .nodeType(originalNode.getNodeType())
-                .feedbackText(originalNode.getFeedbackText())
-                .scoreValue(originalNode.getScoreValue())
-                .positionX(originalNode.getPositionX())
-                .positionY(originalNode.getPositionY())
+        Scenario clonedScenario = Scenario.builder()
+                .title(original.getTitle() + " Copy")
+                .description(original.getDescription())
+                .category(original.getCategory())
+                .difficulty(original.getDifficulty())
+                .status(ScenarioStatus.DRAFT)
+                .createdBy(original.getCreatedBy())
                 .build();
 
-        ScenarioNode savedNode = scenarioNodeRepository.save(clonedNode);
-        nodeMap.put(originalNode.getId(), savedNode);
-    }
+        Scenario savedClone = scenarioRepository.save(clonedScenario);
 
-    var originalChoices = choiceRepository.findByNodeScenarioId(original.getId());
+        Map<Long, ScenarioNode> nodeMap = new HashMap<>();
 
-    for (Choice originalChoice : originalChoices) {
-        ScenarioNode clonedCurrentNode = nodeMap.get(originalChoice.getNode().getId());
-        ScenarioNode clonedNextNode = nodeMap.get(originalChoice.getNextNode().getId());
+        var originalNodes = scenarioNodeRepository.findByScenarioId(original.getId());
 
-        if (clonedCurrentNode != null && clonedNextNode != null) {
-            Choice clonedChoice = Choice.builder()
-                    .node(clonedCurrentNode)
-                    .choiceText(originalChoice.getChoiceText())
-                    .nextNode(clonedNextNode)
-                    .scoreImpact(originalChoice.getScoreImpact())
+        for (ScenarioNode originalNode : originalNodes) {
+            ScenarioNode clonedNode = ScenarioNode.builder()
+                    .scenario(savedClone)
+                    .title(originalNode.getTitle())
+                    .content(originalNode.getContent())
+                    .nodeType(originalNode.getNodeType())
+                    .feedbackText(originalNode.getFeedbackText())
+                    .scoreValue(originalNode.getScoreValue())
+                    .positionX(originalNode.getPositionX())
+                    .positionY(originalNode.getPositionY())
                     .build();
 
-            choiceRepository.save(clonedChoice);
+            ScenarioNode savedNode = scenarioNodeRepository.save(clonedNode);
+            nodeMap.put(originalNode.getId(), savedNode);
         }
-    }
 
-    return savedClone;
-}
+        var originalChoices = choiceRepository.findByNodeScenarioId(original.getId());
+
+        for (Choice originalChoice : originalChoices) {
+            ScenarioNode clonedCurrentNode = nodeMap.get(originalChoice.getNode().getId());
+            ScenarioNode clonedNextNode = nodeMap.get(originalChoice.getNextNode().getId());
+
+            if (clonedCurrentNode != null && clonedNextNode != null) {
+                Choice clonedChoice = Choice.builder()
+                        .node(clonedCurrentNode)
+                        .choiceText(originalChoice.getChoiceText())
+                        .nextNode(clonedNextNode)
+                        .scoreImpact(originalChoice.getScoreImpact())
+                        .build();
+
+                choiceRepository.save(clonedChoice);
+            }
+        }
+
+        return savedClone;
+    }
 }
