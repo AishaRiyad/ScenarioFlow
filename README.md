@@ -60,6 +60,7 @@ ScenarioFlow is a full-stack interactive decision-based simulation platform wher
 
 ---
 
+
 ## Project Structure
 
 ```bash
@@ -83,18 +84,34 @@ scenarioflow/
 │   ├── src/main/resources/
 │   │   └── application.yml
 │   │
+│   ├── database/
+│   │   └── schema.sql
+│   │
+│   ├── Dockerfile
 │   └── pom.xml
 │
 ├── frontend/
 │   ├── src/
 │   │   ├── api/
+│   │   ├── assets/
 │   │   ├── components/
+│   │   ├── context/
+│   │   ├── layouts/
 │   │   ├── pages/
-│   │   └── assets/
+│   │   ├── routes/
+│   │   ├── styles/
+│   │   └── utils/
 │   │
+│   ├── Dockerfile
 │   └── package.json
 │
 ├── docs/
+│   ├── requirements.md
+│   ├── system-analysis.md
+│   ├── database-design.md
+│   └── sql-schema.md
+│
+├── docker-compose.yml
 └── README.md
 ```
 
@@ -211,6 +228,8 @@ A regular registered account.
 * Download PDF reports
 * Receive personalized feedback
 * Manage profile information
+* View leaderboard
+* Receive scenario recommendations
 
 ---
 
@@ -233,6 +252,11 @@ Administrator account with advanced permissions.
 * Visual scenario builder
 * Save visual layout positions
 * View platform analytics
+* Unpublish scenarios
+* Delete scenarios
+* Clone scenarios
+* Validate scenarios before publishing
+* Create scenarios from templates
 
 ---
 
@@ -373,10 +397,133 @@ GET http://localhost:8083/api/scenarios/published?keyword=Interview
 GET http://localhost:8083/api/scenarios/published?category=Career
 ```
 
+---
+
+## Create Scenario From Template
+
+```http
+POST http://localhost:8083/api/scenarios/template
+```
+
+Body:
+
+```json
+{
+  "templateType": "JOB_INTERVIEW",
+  "customTitle": "Junior Developer Interview"
+}
+```
+
+Available Templates:
+
+* JOB_INTERVIEW
+* CUSTOMER_SERVICE
+* LEADERSHIP
+* ETHICS
+* CONFLICT_RESOLUTION
+
+---
+
+## Clone Scenario
+
+```http
+POST http://localhost:8083/api/scenarios/{scenarioId}/clone
+```
+
+Example:
+
+```http
+POST http://localhost:8083/api/scenarios/1/clone
+```
+
+Response:
+
+```json
+{
+  "id": 7,
+  "title": "Leadership Scenario Copy",
+  "status": "DRAFT"
+}
+```
+
+---
+
+## Validate Scenario
+
+```http
+GET http://localhost:8083/api/scenarios/{scenarioId}/validate
+```
+
+Valid Response:
+
+```json
+{
+  "valid": true,
+  "errors": []
+}
+```
+
+Invalid Response:
+
+```json
+{
+  "valid": false,
+  "errors": [
+    "Scenario must have one START node.",
+    "Scenario must have at least one END node."
+  ]
+}
+```
+
+---
+
+## Publish Scenario
+
+```http
+PATCH http://localhost:8083/api/scenarios/{scenarioId}/publish
+```
+
+---
+
+## Unpublish Scenario
+
+```http
+PATCH http://localhost:8083/api/scenarios/{scenarioId}/unpublish
+```
+
+---
+
+## Swagger Documentation
+
+Swagger UI:
+
+```http
+GET http://localhost:8083/swagger-ui.html
+```
+
+OpenAPI JSON:
+
+```http
+GET http://localhost:8083/v3/api-docs
+```
 
 ---
 
 
+
+
+## Build and Run
+
+docker compose up --build
+
+Frontend:
+http://localhost:5173
+
+Backend:
+http://localhost:8083
+
+Swagger:
+http://localhost:8083/swagger-ui.html
 
 
 ## Postman Testing Flow
@@ -391,22 +538,37 @@ GET http://localhost:8083/api/scenarios/published?category=Career
 8. Create END Node
 9. Create Choice (START → DECISION)
 10. Create Choice (DECISION → END)
-11. Publish Scenario
-12. Get Published Scenarios
-13. Start Attempt
-14. Submit First Choice
-15. Submit Second Choice
-16. Get Result
-17. Get User Attempts
-18. Get User Profile
-19. Update Profile
-20. Get Achievements
-21. Submit Scenario Rating
-22. Submit Scenario Comment
-23. Get Scenario Comments
-24. Get Dashboard Statistics
+11. Validate Scenario
+12. Publish Scenario
+13. Clone Scenario (Optional)
+14. Get Published Scenarios
+15. Search Published Scenarios
+16. Filter Published Scenarios by Category
+17. View Scenario Details
+18. Start Attempt
+19. Submit First Choice
+20. Submit Second Choice
+21. Get Result
+22. Receive Personalized Feedback
+23. Download PDF Report
+24. Get User Attempts
+25. Get User Profile
+26. Update User Profile
+27. Get User Achievements
+28. Submit Scenario Rating
+29. Get Scenario Rating Summary
+30. Submit Scenario Comment
+31. Get Scenario Comments
+32. Get Dashboard Statistics
+33. Save Visual Builder Node Position
+34. Create Scenario From Template
+35. Unpublish Scenario (Optional)
+36. View Leaderboard
+37. Get Scenario Recommendations
+38. Open Swagger Documentation
 
 ---
+
 
 ## Example User Journey
 
@@ -424,6 +586,8 @@ GET http://localhost:8083/api/scenarios/published?category=Career
 12. Add comment
 13. Unlock achievements
 14. View profile statistics
+15. Receive recommendations
+16. View leaderboard
 
 ---
 
@@ -506,11 +670,14 @@ SELECT * FROM choices;
 | `/scenarios/:scenarioId/play` | Interactive scenario player                                 |
 | `/attempts/:attemptId/result` | Result page, personalized feedback, rating, and PDF reports |
 | `/my-attempts`                | User attempt history and performance tracking               |
+| `/leaderboard`                | Global leaderboard                                          |
 | `/admin`                      | Analytics dashboard and scenario management                 |
 | `/admin/builder`              | Form-based scenario builder                                 |
 | `/admin/visual-builder`       | Visual decision tree builder with node position persistence |
 
 ---
+
+
 
 
 
@@ -521,12 +688,10 @@ SELECT * FROM choices;
 * Connect nodes visually without forms
 * OpenAI-powered feedback generation
 * Scenario templates marketplace
-* Scenario cloning
-* Email notifications
-* Leaderboards
 * Public user profiles
-* Docker deployment
-* Cloud hosting
+* Email notifications
+* Advanced analytics charts
+* Cloud deployment
 
 ---
 
@@ -549,6 +714,18 @@ The project combines:
 * PDF report generation
 
 This makes ScenarioFlow a portfolio-level software engineering project that demonstrates backend architecture, frontend development, database design, system modeling, and user experience design.
+
+
+
+## Deployment Ready Features
+
+* Dockerized backend
+* Dockerized frontend
+* Docker Compose orchestration
+* Swagger API documentation
+* JWT authentication
+* MySQL persistence
+* Environment variable support
 
 
 ## Author
