@@ -8,7 +8,7 @@ import {
 } from "@xyflow/react";
 import "@xyflow/react/dist/style.css";
 
-import api from "../api/api";
+import api from "../../api/api";
 import "./VisualBuilderPage.css";
 
 export default function VisualBuilderPage() {

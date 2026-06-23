@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link, useParams, useSearchParams } from "react-router-dom";
 import jsPDF from "jspdf";
-import api from "../api/api";
+import api from "../../api/api";
 import "./ResultPage.css";
 
 export default function ResultPage() {
