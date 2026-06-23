@@ -93,14 +93,24 @@ scenarioflow/
 ├── frontend/
 │   ├── src/
 │   │   ├── api/
+│   │   │   └── api.js
+│   │   │
 │   │   ├── assets/
+│   │   │
 │   │   ├── components/
-│   │   ├── context/
-│   │   ├── layouts/
+│   │   │   └── common/
+│   │   │       ├── Navbar.jsx
+│   │   │       └── Navbar.css
+│   │   │
 │   │   ├── pages/
-│   │   ├── routes/
-│   │   ├── styles/
-│   │   └── utils/
+│   │   │   ├── admin/
+│   │   │   ├── auth/
+│   │   │   ├── landing/
+│   │   │   └── user/
+│   │   │
+│   │   ├── App.jsx
+│   │   ├── main.jsx
+│   │   └── index.css
 │   │
 │   ├── Dockerfile
 │   └── package.json
@@ -113,6 +123,45 @@ scenarioflow/
 │
 ├── docker-compose.yml
 └── README.md
+```
+
+### Frontend Pages Structure
+
+```bash
+src/pages/
+│
+├── admin/
+│   ├── AdminDashboard.jsx
+│   ├── AdminDashboard.css
+│   ├── ScenarioBuilderPage.jsx
+│   ├── ScenarioBuilderPage.css
+│   ├── VisualBuilderPage.jsx
+│   └── VisualBuilderPage.css
+│
+├── auth/
+│   ├── LoginPage.jsx
+│   ├── RegisterPage.jsx
+│   └── Auth.css
+│
+├── landing/
+│   ├── LandingPage.jsx
+│   └── LandingPage.css
+│
+└── user/
+    ├── ScenarioListPage.jsx
+    ├── ScenarioListPage.css
+    ├── ScenarioDetailsPage.jsx
+    ├── ScenarioDetailsPage.css
+    ├── ScenarioPlayPage.jsx
+    ├── ScenarioPlayPage.css
+    ├── ResultPage.jsx
+    ├── ResultPage.css
+    ├── MyAttemptsPage.jsx
+    ├── MyAttemptsPage.css
+    ├── ProfilePage.jsx
+    ├── ProfilePage.css
+    ├── LeaderboardPage.jsx
+    └── LeaderboardPage.css
 ```
 
 ---
